@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PokerTable.Game.Interfaces;
 
 namespace PokerTable.Game
 {
@@ -10,7 +11,7 @@ namespace PokerTable.Game
     /// Card Object.  Many of these in a deck
     /// </summary>
     [Serializable]
-    public class Card
+    public class Card : ICard
     {
         /// <summary>
         /// Suites
@@ -44,14 +45,14 @@ namespace PokerTable.Game
         public enum Colors
         {
             /// <summary>
-            /// Black, used by Clubs and Spades
-            /// </summary>
-            Black = 0,
-
-            /// <summary>
             /// Red, used by Hearts and Diamonds
             /// </summary>
-            Red = 1
+            Red = 0,
+
+            /// <summary>
+            /// Black, used by Clubs and Spades
+            /// </summary>
+            Black = 1
         }
 
         /// <summary>
