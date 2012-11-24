@@ -135,20 +135,23 @@ namespace PokerTable.Game
         /// </summary>
         public void DealPlayers()
         {
-            this.CalculateDealOrder();
-            for (int i = 0; i < 2; i++)
+            if (this.DealerExists())
             {
-                foreach (var seat in this.Seats.Where(x => x.PlayerId != null).OrderBy(x => x.DealOrder))
+                this.CalculateDealOrder();
+                for (int i = 0; i < 2; i++)
                 {
-                    var player = this.Players.Single(x => x.ID == seat.PlayerId);
-                    if (player.State == Player.States.Available)
+                    foreach (var seat in this.Seats.Where(x => x.PlayerId != null).OrderBy(x => x.DealOrder))
                     {
-                        player.Cards.Add(this.Deck.DealCard());
+                        var player = this.Players.Single(x => x.ID == seat.PlayerId);
+                        if (player.State == Player.States.Available)
+                        {
+                            player.Cards.Add(this.Deck.DealCard());
+                        }
                     }
                 }
-            }
 
-            // TODO: persist deal player changes - seats.save, players.save
+                // TODO: persist deal player changes - seats.save, players.save 
+            }
         }
 
         /// <summary>
@@ -183,6 +186,7 @@ namespace PokerTable.Game
         {
             try
             {
+                this.RemovePlayerFromSeat(playerId);
                 var seat = this.Seats.Single(x => x.Id == seatId && x.PlayerId.HasValue == false);
                 seat.PlayerId = playerId;
 
@@ -193,6 +197,54 @@ namespace PokerTable.Game
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Removes the player from seat.
+        /// </summary>
+        /// <param name="seatId">The seat id.</param>
+        /// <returns>returns true if successful false if failed</returns>
+        public bool RemovePlayerFromSeat(int seatId)
+        {
+            try
+            {
+                var seat = this.Seats.Single(x => x.Id == seatId);
+                if (seat.PlayerId != null)
+                {
+                    seat.PlayerId = null;
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Removes the player from seat.
+        /// </summary>
+        /// <param name="playerId">The player ID</param>
+        /// <returns>
+        /// returns true if successful false if failed
+        /// </returns>
+        public bool RemovePlayerFromSeat(Guid playerId)
+        {
+            try
+            {
+                var seat = this.Seats.SingleOrDefault(x => x.PlayerId == playerId);
+                if (seat != null)
+                {
+                    seat.PlayerId = null;
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return false;
         }
 
         /// <summary>

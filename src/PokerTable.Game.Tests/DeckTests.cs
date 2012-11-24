@@ -143,7 +143,7 @@ namespace PokerTable.Game.Tests
             for (int i = 0; i < 500; i++)
             {
                 deck.ShuffleDeck();
-                shuffleResults.Add(this.DeckCardsToString(deck));        
+                shuffleResults.Add(Utils.DeckCardsToString(deck));        
             }
 
             var duplicatesGroup = shuffleResults.GroupBy(x => x).Where(x => x.Count() > 1).Select(x => x.Key);
@@ -162,22 +162,6 @@ namespace PokerTable.Game.Tests
             {
                 Assert.IsTrue(deck.Cards.Any(x => x.Suite == suite && x.Value == v), string.Format("Card value {0}, suite: {1} does not exist.", v, suite));  
             }
-        }
-
-        /// <summary>
-        /// Decks the cards to string.
-        /// </summary>
-        /// <param name="deck">The deck.</param>
-        /// <returns>returns a string representation of the cards in the deck.</returns>
-        private string DeckCardsToString(Deck deck)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var card in deck.Cards)
-            {
-                sb.Append(string.Format("{0},", card.Name()));
-            }
-
-            return sb.ToString();
         }
     }
 }

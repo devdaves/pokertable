@@ -109,6 +109,20 @@ namespace PokerTable.Game.Interfaces
         bool AssignSeatToPlayer(int seatId, Guid playerId);
 
         /// <summary>
+        /// Removes the player from seat.
+        /// </summary>
+        /// <param name="seatId">The seat id.</param>
+        /// <returns>returns true if successful false if failed</returns>
+        bool RemovePlayerFromSeat(int seatId);
+
+        /// <summary>
+        /// Removes the player from seat.
+        /// </summary>
+        /// <param name="playerId">The player id.</param>
+        /// <returns>returns true if successful false if failed</returns>
+        bool RemovePlayerFromSeat(Guid playerId);
+
+        /// <summary>
         /// Dealers the exists.
         /// </summary>
         /// <returns>returns true if dealer exists false if not</returns>
