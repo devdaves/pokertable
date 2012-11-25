@@ -16,21 +16,5 @@ namespace PokerTable.Game.Interfaces
         /// The cards.
         /// </value>
         List<ICard> Cards { get; set; }
-
-        /// <summary>
-        /// Builds the deck.
-        /// </summary>
-        void BuildDeck();
-
-        /// <summary>
-        /// Deals the card.
-        /// </summary>
-        /// <returns>returns the card dealt from the deck</returns>
-        ICard DealCard();
-
-        /// <summary>
-        /// Shuffles the deck.
-        /// </summary>
-        void ShuffleDeck();
     }
 }

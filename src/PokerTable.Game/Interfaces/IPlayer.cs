@@ -40,15 +40,5 @@ namespace PokerTable.Game.Interfaces
         /// The state.
         /// </value>        
         Player.States State { get; set; }
-
-        /// <summary>
-        /// Fold the player.
-        /// </summary>
-        void Fold();
-
-        /// <summary>
-        /// Resets the players state and cards
-        /// </summary>
-        void Reset();
     }
 }

@@ -42,10 +42,14 @@
   <ItemGroup>
     <Compile Include="Card.cs" />
     <Compile Include="Deck.cs" />
+    <Compile Include="Engine.cs" />
+    <Compile Include="Exceptions\TableDoesNotExistException.cs" />
+    <Compile Include="Exceptions\TablePasswordInvalidException.cs" />
     <Compile Include="Interfaces\IDeck.cs" />
     <Compile Include="Interfaces\ICard.cs" />
     <Compile Include="Exceptions\NoAvailableCardsException.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\ISeat.cs" />
     <Compile Include="Interfaces\ITable.cs" />
     <Compile Include="Player.cs" />

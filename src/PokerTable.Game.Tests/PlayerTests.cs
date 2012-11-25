@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using PokerTable.Game.Interfaces;
 
 namespace PokerTable.Game.Tests
 {
@@ -13,6 +15,27 @@ namespace PokerTable.Game.Tests
     [TestClass]
     public class PlayerTests
     {
+        /// <summary>
+        /// engine field
+        /// </summary>
+        private Engine engine;
+
+        /// <summary>
+        /// repository mock
+        /// </summary>
+        private Mock<IRepository> repositoryMock;
+
+        /// <summary>
+        /// Run before every test
+        /// </summary>
+        [TestInitialize]
+        public void Setup()
+        {
+            this.repositoryMock = new Mock<IRepository>();
+            this.engine = new Engine(this.repositoryMock.Object);
+            this.engine.CreateNewTable(4, string.Empty, string.Empty);
+        }
+
         /// <summary>
         /// When creating a new player make sure they have an id.
         /// </summary>
@@ -68,7 +91,9 @@ namespace PokerTable.Game.Tests
         {
             var expectedState = Player.States.Folded;
             var player = new Player("test");
-            player.Fold();
+            this.engine.AddPlayer(player);
+            this.engine.FoldPlayer(player.ID);
+
             Assert.IsNotNull(player);
             Assert.AreEqual(expectedState, player.State);
         }
@@ -81,8 +106,10 @@ namespace PokerTable.Game.Tests
         {
             var expectedState = Player.States.Available;
             var player = new Player("test");
-            player.Fold();
-            player.Reset();
+            this.engine.Table.Players.Add(player);
+
+            this.engine.FoldPlayer(player.ID);
+            this.engine.ResetPlayer(player.ID);
 
             Assert.AreEqual(expectedState, player.State);
         }
@@ -97,7 +124,8 @@ namespace PokerTable.Game.Tests
             player.Cards.Add(new Card());
             player.Cards.Add(new Card());
 
-            player.Reset();
+            this.engine.Table.Players.Add(player);
+            this.engine.ResetPlayer(player.ID);
 
             Assert.AreEqual(0, player.Cards.Count());
         }

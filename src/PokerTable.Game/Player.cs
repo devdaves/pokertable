@@ -20,7 +20,8 @@ namespace PokerTable.Game
         {
             this.ID = Guid.NewGuid();
             this.Name = playerName;
-            this.Reset();
+            this.Cards = new List<ICard>();
+            this.State = States.Available;
         }
 
         /// <summary>
@@ -75,22 +76,5 @@ namespace PokerTable.Game
         /// The state.
         /// </value>
         public States State { get; set; }
-
-        /// <summary>
-        /// Fold the player.
-        /// </summary>
-        public void Fold()
-        {
-            this.State = States.Folded;
-        }
-
-        /// <summary>
-        /// Resets the players state and cards
-        /// </summary>
-        public void Reset()
-        {
-            this.State = States.Available;
-            this.Cards = new List<ICard>();
-        }
     }
 }

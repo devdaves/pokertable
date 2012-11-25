@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using PokerTable.Game.Exceptions;
+using PokerTable.Game.Interfaces;
 
 namespace PokerTable.Game.Tests
 {
@@ -15,15 +17,24 @@ namespace PokerTable.Game.Tests
     public class DeckTests
     {
         /// <summary>
-        /// When creating a new deck it should have more then 0 cards
+        /// engine field
         /// </summary>
-        [TestMethod]
-        public void New_Deck_Should_Have_Cards()
+        private Engine engine;
+
+        /// <summary>
+        /// repository mock
+        /// </summary>
+        private Mock<IRepository> repositoryMock;
+
+        /// <summary>
+        /// Run before every test
+        /// </summary>
+        [TestInitialize]
+        public void Setup()
         {
-            var deck = new Deck();
-            Assert.IsNotNull(deck);
-            Assert.IsNotNull(deck.Cards);
-            Assert.IsTrue(deck.Cards.Count() > 0);
+            this.repositoryMock = new Mock<IRepository>();
+            this.engine = new Engine(this.repositoryMock.Object);
+            this.engine.CreateNewTable(0, string.Empty, string.Empty);
         }
 
         /// <summary>
@@ -32,8 +43,7 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void Deck_Should_Have_52_Cards()
         {
-            var deck = new Deck();
-            Assert.AreEqual(52, deck.Cards.Count());
+            Assert.AreEqual(52, this.engine.Table.Deck.Cards.Count());
         }
 
         /// <summary>
@@ -42,11 +52,10 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void Deck_Should_Have_13_Cards_Of_Each_Suite()
         {
-            var deck = new Deck();
-            Assert.AreEqual(13, deck.Cards.Count(x => x.Suite == Card.Suites.Spades), "Not enough Spades");
-            Assert.AreEqual(13, deck.Cards.Count(x => x.Suite == Card.Suites.Clubs), "Not enough Clubs");
-            Assert.AreEqual(13, deck.Cards.Count(x => x.Suite == Card.Suites.Hearts), "Not enough Hearts");
-            Assert.AreEqual(13, deck.Cards.Count(x => x.Suite == Card.Suites.Diamonds), "Not enough Diamonds");
+            Assert.AreEqual(13, this.engine.Table.Deck.Cards.Count(x => x.Suite == Card.Suites.Spades), "Not enough Spades");
+            Assert.AreEqual(13, this.engine.Table.Deck.Cards.Count(x => x.Suite == Card.Suites.Clubs), "Not enough Clubs");
+            Assert.AreEqual(13, this.engine.Table.Deck.Cards.Count(x => x.Suite == Card.Suites.Hearts), "Not enough Hearts");
+            Assert.AreEqual(13, this.engine.Table.Deck.Cards.Count(x => x.Suite == Card.Suites.Diamonds), "Not enough Diamonds");
         }
 
         /// <summary>
@@ -55,9 +64,8 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void Deck_Should_Have_26_Cards_Of_Each_Color()
         {
-            var deck = new Deck();
-            Assert.AreEqual(26, deck.Cards.Count(x => x.Color == Card.Colors.Black), "Not enough Black cards");
-            Assert.AreEqual(26, deck.Cards.Count(x => x.Color == Card.Colors.Red), "Not enough Red cards");
+            Assert.AreEqual(26, this.engine.Table.Deck.Cards.Count(x => x.Color == Card.Colors.Black), "Not enough Black cards");
+            Assert.AreEqual(26, this.engine.Table.Deck.Cards.Count(x => x.Color == Card.Colors.Red), "Not enough Red cards");
         }
 
         /// <summary>
@@ -66,9 +74,8 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void Deck_Should_Have_26_Black_Cards_Only_SpadesAndClubs()
         {
-            var deck = new Deck();
             List<Card.Suites> allowedSuites = new List<Card.Suites>() { Card.Suites.Clubs, Card.Suites.Spades };
-            Assert.AreEqual(26, deck.Cards.Count(x => x.Color == Card.Colors.Black && allowedSuites.Contains(x.Suite)), "There must be 26 black spades and clubs combined");
+            Assert.AreEqual(26, this.engine.Table.Deck.Cards.Count(x => x.Color == Card.Colors.Black && allowedSuites.Contains(x.Suite)), "There must be 26 black spades and clubs combined");
         }
 
         /// <summary>
@@ -77,9 +84,8 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void Deck_Should_Have_26_Red_Cards_Only_HeartsAndDiamonds()
         {
-            var deck = new Deck();
             List<Card.Suites> allowedSuites = new List<Card.Suites>() { Card.Suites.Hearts, Card.Suites.Diamonds };
-            Assert.AreEqual(26, deck.Cards.Count(x => x.Color == Card.Colors.Red && allowedSuites.Contains(x.Suite)), "There must be 26 red hearts and diamonds combined");
+            Assert.AreEqual(26, this.engine.Table.Deck.Cards.Count(x => x.Color == Card.Colors.Red && allowedSuites.Contains(x.Suite)), "There must be 26 red hearts and diamonds combined");
         }
 
         /// <summary>
@@ -88,11 +94,10 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void Deck_Cards_Should_Have_Correct_Values_For_Suites()
         {
-            var deck = new Deck();
-            this.TestDeckCardsValues(deck, Card.Suites.Clubs);
-            this.TestDeckCardsValues(deck, Card.Suites.Spades);
-            this.TestDeckCardsValues(deck, Card.Suites.Hearts);
-            this.TestDeckCardsValues(deck, Card.Suites.Diamonds);
+            this.TestDeckCardsValues(this.engine.Table.Deck, Card.Suites.Clubs);
+            this.TestDeckCardsValues(this.engine.Table.Deck, Card.Suites.Spades);
+            this.TestDeckCardsValues(this.engine.Table.Deck, Card.Suites.Hearts);
+            this.TestDeckCardsValues(this.engine.Table.Deck, Card.Suites.Diamonds);
         }
 
         /// <summary>
@@ -101,10 +106,9 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void DealCard_Should_Return_First_Available_Card()
         {
-            var deck = new Deck();
-            var thirdCard = deck.Cards[2];
-            var fourthCard = deck.Cards[3];
-            deck.Cards.ForEach(x => 
+            var thirdCard = this.engine.Table.Deck.Cards[2];
+            var fourthCard = this.engine.Table.Deck.Cards[3];
+            this.engine.Table.Deck.Cards.ForEach(x => 
             {
                 if (x != thirdCard && x != fourthCard)
                 {
@@ -112,7 +116,7 @@ namespace PokerTable.Game.Tests
                 }
             });
 
-            var result = deck.DealCard();
+            var result = this.engine.DealCard();
 
             Assert.IsNotNull(result);
             Assert.AreEqual(thirdCard.Color, result.Color);
@@ -127,9 +131,8 @@ namespace PokerTable.Game.Tests
         [ExpectedException(typeof(NoAvailableCardsException))]
         public void DealCard_NoneAvailable_Should_Throw_NoAvailableCardException()
         {
-            var deck = new Deck();
-            deck.Cards.ForEach(x => x.State = Card.States.Dealt);
-            var result = deck.DealCard();
+            this.engine.Table.Deck.Cards.ForEach(x => x.State = Card.States.Dealt);
+            var result = this.engine.DealCard();
         }
 
         /// <summary>
@@ -138,12 +141,11 @@ namespace PokerTable.Game.Tests
         [TestMethod]
         public void ShuffleDeck_500_Iterations_Not_the_Same()
         {
-            var deck = new Deck();
             var shuffleResults = new List<string>();
             for (int i = 0; i < 500; i++)
             {
-                deck.ShuffleDeck();
-                shuffleResults.Add(Utils.DeckCardsToString(deck));        
+                this.engine.ShuffleDeck();
+                shuffleResults.Add(Utils.DeckCardsToString(this.engine.Table.Deck));        
             }
 
             var duplicatesGroup = shuffleResults.GroupBy(x => x).Where(x => x.Count() > 1).Select(x => x.Key);
@@ -156,7 +158,7 @@ namespace PokerTable.Game.Tests
         /// </summary>
         /// <param name="deck">The deck.</param>
         /// <param name="suite">The suite.</param>
-        private void TestDeckCardsValues(Deck deck, Card.Suites suite)
+        private void TestDeckCardsValues(IDeck deck, Card.Suites suite)
         {
             for (int v = 1; v < 14; v++)
             {
