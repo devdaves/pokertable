@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using PokerTable.Game.Extensions;
 using PokerTable.Game.Interfaces;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Data
 {
@@ -53,7 +54,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="player">The player.</param>
-        public void AddPlayer(Guid tableId, IPlayer player)
+        public void AddPlayer(Guid tableId, Player player)
         {
             throw new NotImplementedException();
         }
@@ -63,7 +64,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="player">The player.</param>
-        public void SavePlayer(Guid tableId, IPlayer player)
+        public void SavePlayer(Guid tableId, Player player)
         {
             throw new NotImplementedException();
         }
@@ -73,7 +74,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="players">The players.</param>
-        public void SavePlayerAll(Guid tableId, List<IPlayer> players)
+        public void SavePlayerAll(Guid tableId, List<Player> players)
         {
             throw new NotImplementedException();
         }
@@ -83,7 +84,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="player">The player.</param>
-        public void RemovePlayer(Guid tableId, IPlayer player)
+        public void RemovePlayer(Guid tableId, Player player)
         {
             throw new NotImplementedException();
         }
@@ -93,7 +94,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="seat">The seat.</param>
-        public void AddSeat(Guid tableId, ISeat seat)
+        public void AddSeat(Guid tableId, Seat seat)
         {
             throw new NotImplementedException();
         }
@@ -103,7 +104,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="seat">The seat.</param>
-        public void SaveSeat(Guid tableId, ISeat seat)
+        public void SaveSeat(Guid tableId, Seat seat)
         {
             throw new NotImplementedException();
         }
@@ -113,7 +114,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="seats">The seats.</param>
-        public void SaveSeatAll(Guid tableId, List<ISeat> seats)
+        public void SaveSeatAll(Guid tableId, List<Seat> seats)
         {
             throw new NotImplementedException();
         }
@@ -123,7 +124,7 @@ namespace PokerTable.Game.Data
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="seat">The seat.</param>
-        public void DeleteSeat(Guid tableId, ISeat seat)
+        public void DeleteSeat(Guid tableId, Seat seat)
         {
             throw new NotImplementedException();
         }
@@ -132,7 +133,7 @@ namespace PokerTable.Game.Data
         /// Saves the deck.
         /// </summary>
         /// <param name="table">The table.</param>
-        public void SaveDeck(ITable table)
+        public void SaveDeck(Table table)
         {
             throw new NotImplementedException();
         }
@@ -153,7 +154,7 @@ namespace PokerTable.Game.Data
         /// Saves the new table.
         /// </summary>
         /// <param name="table">The table.</param>
-        public void SaveNewTable(ITable table)
+        public void SaveNewTable(Table table)
         {
             throw new NotImplementedException();
         }
@@ -162,7 +163,7 @@ namespace PokerTable.Game.Data
         /// Saves the table.
         /// </summary>
         /// <param name="table">The table.</param>
-        public void SaveTable(ITable table)
+        public void SaveTable(Table table)
         {
             throw new NotImplementedException();
         }

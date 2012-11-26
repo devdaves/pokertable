@@ -34,7 +34,7 @@ namespace PokerTable.Game
         /// <value>
         /// The table.
         /// </value>
-        public ITable Table { get; set; }
+        public Table Table { get; set; }
 
         /// <summary>
         /// Creates the new table.
@@ -290,8 +290,8 @@ namespace PokerTable.Game
         /// </summary>
         public void ResetTable()
         {
-            this.Table.Burn = new List<ICard>();
-            this.Table.PublicCards = new List<ICard>();
+            this.Table.Burn = new List<Card>();
+            this.Table.PublicCards = new List<Card>();
             this.repository.SaveTable(this.Table);
 
             this.ResetPlayerAll(); // saves the players inside the method
@@ -360,7 +360,7 @@ namespace PokerTable.Game
         /// <returns>
         /// returns true if player was added false if not
         /// </returns>
-        public bool AddPlayer(IPlayer player)
+        public bool AddPlayer(Player player)
         {
             try
             {
@@ -414,7 +414,7 @@ namespace PokerTable.Game
         /// Deals the card.
         /// </summary>
         /// <returns>returns the card dealt from the deck</returns>
-        internal ICard DealCard()
+        internal Card DealCard()
         {
             var c = this.Table.Deck.Cards.FirstOrDefault(x => x.State == Card.States.Available);
             if (c == null)
@@ -431,7 +431,7 @@ namespace PokerTable.Game
         /// </summary>
         internal void BuildDeck()
         {
-            this.Table.Deck.Cards = new List<ICard>();
+            this.Table.Deck.Cards = new List<Card>();
 
             for (int s = 1; s < 5; s++)
             {
@@ -453,7 +453,7 @@ namespace PokerTable.Game
             if (player != null)
             {
                 player.State = Player.States.Available;
-                player.Cards = new List<ICard>();
+                player.Cards = new List<Card>();
                 if (saveNow)
                 {
                     this.repository.SavePlayer(this.Table.Id, player); 
@@ -476,7 +476,7 @@ namespace PokerTable.Game
         /// <param name="howManySeats">how many seats to add</param>
         private void AddManySeats(int howManySeats)
         {
-            this.Table.Seats = new List<ISeat>();
+            this.Table.Seats = new List<Seat>();
 
             for (int i = 0; i < howManySeats; i++)
             {

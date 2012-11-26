@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using PokerTable.Game.Interfaces;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Interfaces
 {
@@ -15,6 +15,6 @@ namespace PokerTable.Game.Interfaces
         /// <value>
         /// The cards.
         /// </value>
-        List<ICard> Cards { get; set; }
+        List<Card> Cards { get; set; }
     }
 }

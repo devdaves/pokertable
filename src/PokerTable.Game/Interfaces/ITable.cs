@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Interfaces
 {
@@ -41,7 +42,7 @@ namespace PokerTable.Game.Interfaces
         /// <value>
         /// The deck.
         /// </value>
-        IDeck Deck { get; set; }
+        Deck Deck { get; set; }
 
         /// <summary>
         /// Gets or sets the seats.
@@ -49,7 +50,7 @@ namespace PokerTable.Game.Interfaces
         /// <value>
         /// The seats.
         /// </value>
-        List<ISeat> Seats { get; set; }
+        List<Seat> Seats { get; set; }
 
         /// <summary>
         /// Gets or sets the players.
@@ -57,7 +58,7 @@ namespace PokerTable.Game.Interfaces
         /// <value>
         /// The players.
         /// </value>
-        List<IPlayer> Players { get; set; }
+        List<Player> Players { get; set; }
 
         /// <summary>
         /// Gets or sets the burn.
@@ -65,7 +66,7 @@ namespace PokerTable.Game.Interfaces
         /// <value>
         /// The burn.
         /// </value>
-        List<ICard> Burn { get; set; }
+        List<Card> Burn { get; set; }
 
         /// <summary>
         /// Gets or sets the public cards.
@@ -73,6 +74,6 @@ namespace PokerTable.Game.Interfaces
         /// <value>
         /// The public cards.
         /// </value>
-        List<ICard> PublicCards { get; set; }
+        List<Card> PublicCards { get; set; }
     }
 }

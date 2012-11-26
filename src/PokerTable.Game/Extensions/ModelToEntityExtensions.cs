@@ -22,7 +22,7 @@ namespace PokerTable.Game.Extensions
         /// <returns>
         /// returns a seat entity
         /// </returns>
-        internal static SeatEntity ToSeatEntity(this ISeat seat, Guid tableId)
+        internal static SeatEntity ToSeatEntity(this Seat seat, Guid tableId)
         {
             var seatEntity = new SeatEntity(tableId, seat.Id);
             seatEntity.SeatId = seat.Id;
@@ -40,12 +40,12 @@ namespace PokerTable.Game.Extensions
         /// <returns>
         /// returns a player entity
         /// </returns>
-        internal static PlayerEntity ToPlayerEntity(this IPlayer player, Guid tableId)
+        internal static PlayerEntity ToPlayerEntity(this Player player, Guid tableId)
         {
             var playerEntity = new PlayerEntity(tableId, player.ID);
             playerEntity.PlayerId = player.ID.ToString();
             playerEntity.Name = player.Name;
-            playerEntity.Cards = Util.Serialize<List<ICard>>(player.Cards);
+            playerEntity.Cards = Util.Serialize<List<Card>>(player.Cards);
             playerEntity.State = (int)player.State;
             return playerEntity;
         }
@@ -57,14 +57,14 @@ namespace PokerTable.Game.Extensions
         /// <returns>
         /// returns a poker table entity
         /// </returns>
-        internal static PokerTableEntity ToPokerTableEntity(this ITable table)
+        internal static PokerTableEntity ToPokerTableEntity(this Table table)
         {
             var pokerTableEntity = new PokerTableEntity(table.Id);
             pokerTableEntity.Name = table.Name;
             pokerTableEntity.Password = table.Password;
-            pokerTableEntity.Deck = Util.Serialize<IDeck>(table.Deck);
-            pokerTableEntity.BurnCards = Util.Serialize<List<ICard>>(table.Burn);
-            pokerTableEntity.PublicCards = Util.Serialize<List<ICard>>(table.PublicCards);
+            pokerTableEntity.Deck = Util.Serialize<Deck>(table.Deck);
+            pokerTableEntity.BurnCards = Util.Serialize<List<Card>>(table.Burn);
+            pokerTableEntity.PublicCards = Util.Serialize<List<Card>>(table.PublicCards);
             return pokerTableEntity;
         }
     }

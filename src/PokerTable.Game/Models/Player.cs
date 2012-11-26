@@ -21,7 +21,7 @@ namespace PokerTable.Game.Models
         {
             this.ID = Guid.NewGuid();
             this.Name = playerName;
-            this.Cards = new List<ICard>();
+            this.Cards = new List<Card>();
             this.State = States.Available;
         }
 
@@ -68,7 +68,7 @@ namespace PokerTable.Game.Models
         /// <value>
         /// The cards.
         /// </value>
-        public List<ICard> Cards { get; set; }
+        public List<Card> Cards { get; set; }
 
         /// <summary>
         /// Gets or sets the state.

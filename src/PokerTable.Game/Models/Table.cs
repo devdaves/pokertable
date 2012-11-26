@@ -23,10 +23,10 @@ namespace PokerTable.Game.Models
             this.Name = tableName;
             this.Password = tablePassword;
             this.Deck = new Deck();
-            this.Seats = new List<ISeat>();
-            this.Players = new List<IPlayer>();
-            this.Burn = new List<ICard>();
-            this.PublicCards = new List<ICard>();
+            this.Seats = new List<Seat>();
+            this.Players = new List<Player>();
+            this.Burn = new List<Card>();
+            this.PublicCards = new List<Card>();
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace PokerTable.Game.Models
         /// <value>
         /// The deck.
         /// </value>
-        public IDeck Deck { get; set; }
+        public Deck Deck { get; set; }
 
         /// <summary>
         /// Gets or sets the seats.
@@ -67,7 +67,7 @@ namespace PokerTable.Game.Models
         /// <value>
         /// The seats.
         /// </value>
-        public List<ISeat> Seats { get; set; }
+        public List<Seat> Seats { get; set; }
 
         /// <summary>
         /// Gets or sets the players.
@@ -75,7 +75,7 @@ namespace PokerTable.Game.Models
         /// <value>
         /// The players.
         /// </value>
-        public List<IPlayer> Players { get; set; }
+        public List<Player> Players { get; set; }
 
         /// <summary>
         /// Gets or sets the burn.
@@ -83,7 +83,7 @@ namespace PokerTable.Game.Models
         /// <value>
         /// The burn.
         /// </value>
-        public List<ICard> Burn { get; set; }
+        public List<Card> Burn { get; set; }
 
         /// <summary>
         /// Gets or sets the public cards.
@@ -91,6 +91,6 @@ namespace PokerTable.Game.Models
         /// <value>
         /// The public cards.
         /// </value>
-        public List<ICard> PublicCards { get; set; }
+        public List<Card> PublicCards { get; set; }
     }
 }

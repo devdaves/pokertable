@@ -15,11 +15,19 @@ namespace PokerTable.Game.Models
     public class Deck : IDeck
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="Deck" /> class.
+        /// </summary>
+        public Deck()
+        {
+            this.Cards = new List<Card>();
+        }
+
+        /// <summary>
         /// Gets or sets the cards.
         /// </summary>
         /// <value>
         /// The cards.
         /// </value>
-        public List<ICard> Cards { get; set; }
+        public List<Card> Cards { get; set; }
     }
 }
