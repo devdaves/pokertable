@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PokerTable.Game.Exceptions;
 using PokerTable.Game.Interfaces;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game
 {
@@ -211,7 +212,7 @@ namespace PokerTable.Game
         public void ShuffleDeck()
         {
             this.Table.Deck.Cards = this.Table.Deck.Cards.OrderBy(x => Guid.NewGuid()).ToList();
-            this.repository.SaveDeck(this.Table.Id, this.Table.Deck);
+            this.repository.SaveDeck(this.Table);
         }
 
         /// <summary>

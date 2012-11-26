@@ -1,4 +1,5 @@
 ﻿using System;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Interfaces
 {

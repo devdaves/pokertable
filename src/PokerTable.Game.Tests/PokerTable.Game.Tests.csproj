@@ -54,14 +54,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CardTests.cs" />
-    <Compile Include="DeckTests.cs" />
-    <Compile Include="PlayerTests.cs" />
+    <Compile Include="Unit\CardTests.cs" />
+    <Compile Include="Unit\DeckTests.cs" />
+    <Compile Include="Unit\PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TableTests.cs" />
+    <Compile Include="Unit\TableTests.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +70,9 @@
       <Project>{12653444-3340-4adf-bdd0-6b8e955bf55e}</Project>
       <Name>PokerTable.Game</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Integration\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

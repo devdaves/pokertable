@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PokerTable.Game.Interfaces;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Interfaces
 {

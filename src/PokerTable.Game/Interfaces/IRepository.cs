@@ -70,16 +70,15 @@ namespace PokerTable.Game.Interfaces
         /// <summary>
         /// Saves the deck.
         /// </summary>
-        /// <param name="tableId">The table id.</param>
-        /// <param name="deck">The deck.</param>
-        void SaveDeck(Guid tableId, IDeck deck);
+        /// <param name="table">The table.</param>
+        void SaveDeck(ITable table);
 
         /// <summary>
         /// Loads the table.
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns the table</returns>
-        Table LoadTable(Guid tableId);
+        ITable LoadTable(Guid tableId);
 
         /// <summary>
         /// Saves the new table.
@@ -92,11 +91,5 @@ namespace PokerTable.Game.Interfaces
         /// </summary>
         /// <param name="table">The table.</param>
         void SaveTable(ITable table);
-
-        /// <summary>
-        /// Updates the table last modified.
-        /// </summary>
-        /// <param name="tableId">The table id.</param>
-        void UpdateTableLastModified(Guid tableId);
     }
 }
