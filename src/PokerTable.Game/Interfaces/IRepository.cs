@@ -82,12 +82,6 @@ namespace PokerTable.Game.Interfaces
         ITable LoadTable(Guid tableId);
 
         /// <summary>
-        /// Saves the new table.
-        /// </summary>
-        /// <param name="table">The table.</param>
-        void SaveNewTable(Table table);
-
-        /// <summary>
         /// Saves the table.
         /// </summary>
         /// <param name="table">The table.</param>

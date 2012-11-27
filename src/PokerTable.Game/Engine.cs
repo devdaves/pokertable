@@ -49,7 +49,7 @@ namespace PokerTable.Game
             this.BuildDeck();
             this.ShuffleDeck();
 
-            this.repository.SaveNewTable(this.Table);
+            this.repository.SaveTable(this.Table);
         }
 
         /// <summary>

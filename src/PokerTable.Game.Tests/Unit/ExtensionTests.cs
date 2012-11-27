@@ -171,5 +171,93 @@ namespace PokerTable.Game.Tests.Unit
             Assert.AreEqual(seat.IsDealer, seatModel.IsDealer);
             Assert.AreEqual(seat.PlayerId, seatModel.PlayerId);
         }
+
+        /// <summary>
+        /// ToPlayerModel should convert a player entity to a player model with the correct values
+        /// </summary>
+        [TestMethod]
+        public void ToPlayerModel_Should_Return_PlayerModel_With_Valid_Values()
+        {
+            var tableId = Guid.NewGuid();
+            var player = new Player("Test");
+            player.Cards.Add(new Card()
+            {
+                Color = Card.Colors.Black,
+                State = Card.States.Available,
+                Suite = Card.Suites.Clubs,
+                Value = 2
+            });
+            var playerEntity = player.ToPlayerEntity(tableId);
+            var playerModel = playerEntity.ToPlayerModel();
+
+            Assert.IsNotNull(playerModel);
+            Assert.IsInstanceOfType(playerModel, typeof(Player));
+            Assert.AreEqual(player.ID, playerModel.ID);
+            Assert.AreEqual(player.Name, playerModel.Name);
+            Assert.AreEqual(player.Cards.Count(), playerModel.Cards.Count());
+            Assert.AreEqual(player.Cards[0].Color, playerModel.Cards[0].Color);
+            Assert.AreEqual(player.Cards[0].State, playerModel.Cards[0].State);
+            Assert.AreEqual(player.Cards[0].Suite, playerModel.Cards[0].Suite);
+            Assert.AreEqual(player.Cards[0].Value, playerModel.Cards[0].Value);
+        }
+
+        /// <summary>
+        /// ToPlayerModel should convert a player entity with no cards into a player model
+        /// with a list of 0 cards
+        /// </summary>
+        [TestMethod]
+        public void ToPlayerModel_EmptyCards_Should_Return_PlayerModel_With_Empty_Cards()
+        {
+            var tableId = Guid.NewGuid();
+            var player = new Player("Test");
+
+            var playerEntity = player.ToPlayerEntity(tableId);
+            var playerModel = playerEntity.ToPlayerModel();
+
+            Assert.AreEqual(0, playerModel.Cards.Count());
+        }
+
+        /// <summary>
+        /// ToTableModel should convert a poker table entity into a table with the correct values
+        /// </summary>
+        [TestMethod]
+        public void ToTableModel_Should_Return_Table_With_Valid_Values()
+        {
+            var table = new Table("Test", "TestPassword");
+            var card = new Card()
+            {
+                Color = Card.Colors.Black,
+                State = Card.States.Available,
+                Suite = Card.Suites.Clubs,
+                Value = 2
+            };
+            table.Deck.Cards.Add(card);
+            table.Burn.Add(card);
+            table.PublicCards.Add(card);
+
+            var tableEntity = table.ToPokerTableEntity();
+            var tableModel = tableEntity.ToTableModel();
+
+            Assert.IsNotNull(tableModel);
+            Assert.IsInstanceOfType(tableModel, typeof(Table));
+            Assert.AreEqual(table.Id, tableModel.Id);
+            Assert.AreEqual(table.Name, tableModel.Name);
+            Assert.AreEqual(table.Password, tableModel.Password);
+
+            Assert.AreEqual(table.Deck.Cards[0].Color, tableModel.Deck.Cards[0].Color);
+            Assert.AreEqual(table.Deck.Cards[0].State, tableModel.Deck.Cards[0].State);
+            Assert.AreEqual(table.Deck.Cards[0].Suite, tableModel.Deck.Cards[0].Suite);
+            Assert.AreEqual(table.Deck.Cards[0].Value, tableModel.Deck.Cards[0].Value);
+
+            Assert.AreEqual(table.Burn[0].Color, tableModel.Burn[0].Color);
+            Assert.AreEqual(table.Burn[0].State, tableModel.Burn[0].State);
+            Assert.AreEqual(table.Burn[0].Suite, tableModel.Burn[0].Suite);
+            Assert.AreEqual(table.Burn[0].Value, tableModel.Burn[0].Value);
+
+            Assert.AreEqual(table.PublicCards[0].Color, tableModel.PublicCards[0].Color);
+            Assert.AreEqual(table.PublicCards[0].State, tableModel.PublicCards[0].State);
+            Assert.AreEqual(table.PublicCards[0].Suite, tableModel.PublicCards[0].Suite);
+            Assert.AreEqual(table.PublicCards[0].Value, tableModel.PublicCards[0].Value);
+        }
     }
 }

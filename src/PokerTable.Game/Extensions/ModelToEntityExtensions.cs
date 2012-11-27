@@ -65,6 +65,7 @@ namespace PokerTable.Game.Extensions
             pokerTableEntity.Deck = Util.Serialize<Deck>(table.Deck);
             pokerTableEntity.BurnCards = Util.Serialize<List<Card>>(table.Burn);
             pokerTableEntity.PublicCards = Util.Serialize<List<Card>>(table.PublicCards);
+            pokerTableEntity.LastUpdatedUTC = DateTime.UtcNow;
             return pokerTableEntity;
         }
     }

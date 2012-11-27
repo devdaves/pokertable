@@ -18,12 +18,12 @@ namespace PokerTable.Game.Data
     internal class AzureRepository : IRepository
     {
         /// <summary>
-        /// Azure Table Name
+        /// Azure Table Name (if this changes, change in integration tests also)
         /// </summary>
         private const string AzureTableName = "PokerTable";
 
         /// <summary>
-        /// Azure Storage Connection String Key
+        /// Azure Storage Connection String Key (if this changes, change in integration tests also)
         /// </summary>
         private const string AzureStorageConnectionStringKey = "AzureStorageConnectionString";
 
@@ -151,21 +151,14 @@ namespace PokerTable.Game.Data
         }
 
         /// <summary>
-        /// Saves the new table.
-        /// </summary>
-        /// <param name="table">The table.</param>
-        public void SaveNewTable(Table table)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Saves the table.
         /// </summary>
         /// <param name="table">The table.</param>
         public void SaveTable(Table table)
         {
-            throw new NotImplementedException();
+            var entity = table.ToPokerTableEntity();
+            TableOperation insertOperation = TableOperation.InsertOrMerge(entity);
+            this.table.Execute(insertOperation);
         }
     }
 }

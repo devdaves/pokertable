@@ -38,7 +38,11 @@ namespace PokerTable.Game.Extensions
         /// <returns>returns a player</returns>
         internal static Player ToPlayerModel(this PlayerEntity playerEntity)
         {
-            throw new NotImplementedException();
+            var player = new Player(playerEntity.Name);
+            player.ID = Guid.Parse(playerEntity.PlayerId);
+            player.State = (Player.States)playerEntity.State;
+            player.Cards = Util.DeSerialize<List<Card>>(playerEntity.Cards);
+            return player;
         }
 
         /// <summary>
@@ -48,7 +52,12 @@ namespace PokerTable.Game.Extensions
         /// <returns>returns a table</returns>
         internal static Table ToTableModel(this PokerTableEntity pokerTableEntity)
         {
-            throw new NotImplementedException();
+            var table = new Table(pokerTableEntity.Name, pokerTableEntity.Password);
+            table.Id = Guid.Parse(pokerTableEntity.PartitionKey);
+            table.Deck = Util.DeSerialize<Deck>(pokerTableEntity.Deck);
+            table.Burn = Util.DeSerialize<List<Card>>(pokerTableEntity.BurnCards);
+            table.PublicCards = Util.DeSerialize<List<Card>>(pokerTableEntity.PublicCards);
+            return table;
         }
     }
 }
