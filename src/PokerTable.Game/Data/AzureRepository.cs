@@ -50,23 +50,15 @@ namespace PokerTable.Game.Data
         }
 
         /// <summary>
-        /// Adds the player.
-        /// </summary>
-        /// <param name="tableId">The table id.</param>
-        /// <param name="player">The player.</param>
-        public void AddPlayer(Guid tableId, Player player)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Saves the player.
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="player">The player.</param>
         public void SavePlayer(Guid tableId, Player player)
         {
-            throw new NotImplementedException();
+            var entity = player.ToPlayerEntity(tableId);
+            TableOperation insertOperation = TableOperation.InsertOrMerge(entity);
+            this.table.Execute(insertOperation);
         }
 
         /// <summary>
@@ -76,7 +68,14 @@ namespace PokerTable.Game.Data
         /// <param name="players">The players.</param>
         public void SavePlayerAll(Guid tableId, List<Player> players)
         {
-            throw new NotImplementedException();
+            TableBatchOperation batchOperation = new TableBatchOperation();
+            foreach (var player in players)
+            {
+                var entity = player.ToPlayerEntity(tableId);
+                batchOperation.InsertOrMerge(entity);
+            }
+
+            this.table.ExecuteBatch(batchOperation);
         }
 
         /// <summary>
@@ -86,17 +85,10 @@ namespace PokerTable.Game.Data
         /// <param name="player">The player.</param>
         public void RemovePlayer(Guid tableId, Player player)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds the seat.
-        /// </summary>
-        /// <param name="tableId">The table id.</param>
-        /// <param name="seat">The seat.</param>
-        public void AddSeat(Guid tableId, Seat seat)
-        {
-            throw new NotImplementedException();
+            var entity = player.ToPlayerEntity(tableId);
+            entity.ETag = "*";
+            TableOperation deleteOperation = TableOperation.Delete(entity);
+            this.table.Execute(deleteOperation);
         }
 
         /// <summary>
@@ -106,7 +98,9 @@ namespace PokerTable.Game.Data
         /// <param name="seat">The seat.</param>
         public void SaveSeat(Guid tableId, Seat seat)
         {
-            throw new NotImplementedException();
+            var entity = seat.ToSeatEntity(tableId);
+            TableOperation insertOperation = TableOperation.InsertOrMerge(entity);
+            this.table.Execute(insertOperation);
         }
 
         /// <summary>
@@ -116,17 +110,27 @@ namespace PokerTable.Game.Data
         /// <param name="seats">The seats.</param>
         public void SaveSeatAll(Guid tableId, List<Seat> seats)
         {
-            throw new NotImplementedException();
+            TableBatchOperation batchOperation = new TableBatchOperation();
+            foreach (var seat in seats)
+            {
+                var entity = seat.ToSeatEntity(tableId);
+                batchOperation.InsertOrMerge(entity);
+            }
+
+            this.table.ExecuteBatch(batchOperation);
         }
 
         /// <summary>
-        /// Deletes the seat.
+        /// Removes the seat.
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="seat">The seat.</param>
-        public void DeleteSeat(Guid tableId, Seat seat)
+        public void RemoveSeat(Guid tableId, Seat seat)
         {
-            throw new NotImplementedException();
+            var entity = seat.ToSeatEntity(tableId);
+            entity.ETag = "*";
+            TableOperation deleteOperation = TableOperation.Delete(entity);
+            this.table.Execute(deleteOperation);
         }
 
         /// <summary>
@@ -145,7 +149,7 @@ namespace PokerTable.Game.Data
         /// <returns>
         /// returns the table
         /// </returns>
-        public ITable LoadTable(Guid tableId)
+        public Table LoadTable(Guid tableId)
         {
             throw new NotImplementedException();
         }

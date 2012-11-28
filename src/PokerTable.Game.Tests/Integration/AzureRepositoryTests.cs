@@ -84,7 +84,7 @@ namespace PokerTable.Game.Tests.Integration
 
         /// <summary>
         /// SaveTable should convert a table model into a poker table entity
-        /// and store insert it in table storage if it doesn't exist
+        /// and insert it in table storage if it doesn't exist
         /// </summary>
         [TestMethod]
         public void SaveTable_NoExisitingTableRecord_Should_InsertPokerTableEntity()
@@ -122,6 +122,161 @@ namespace PokerTable.Game.Tests.Integration
         }
 
         /// <summary>
+        /// SavePlayer should convert a player model into a player entity
+        /// and insert it in table storage if it doesn't exist
+        /// </summary>
+        [TestMethod]
+        public void SavePlayer_NoExistingPlayerRecord_Should_InsertPlayerEntity()
+        {
+            var tableId = Guid.NewGuid();
+            var player = new Player("Test");
+            this.repository.SavePlayer(tableId, player);
+
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), string.Format("Player-{0}", player.ID));
+
+            Assert.AreEqual(1, entities.Count());
+            Assert.AreEqual(player.Name, entities[0].Name);
+        }
+
+        /// <summary>
+        /// SavePlayer - if save a player when the player already exists in storage
+        /// the values should be updated instead of duplicating the record or causing
+        /// an exception
+        /// </summary>
+        [TestMethod]
+        public void SavePlayer_WithExistingPlayerRecord_ShouldUpdateValues()
+        {
+            // orginal table save
+            var tableId = Guid.NewGuid();
+            var player = new Player("Test");
+            this.repository.SavePlayer(tableId, player);
+
+            // change something and tell it to create again, should update the table
+            player.Name = "Test2";
+            this.repository.SavePlayer(tableId, player);
+
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), string.Format("Player-{0}", player.ID));
+
+            Assert.AreEqual(1, entities.Count());
+            Assert.AreEqual(player.Name, entities[0].Name);
+        }
+
+        /// <summary>
+        /// SavePlayerAll should convert a player model list into a player entity list
+        /// and insert it in table storage if it doesn't exist
+        /// </summary>
+        [TestMethod]
+        public void SavePlayerAll_NoExistingPlayerRecords_Should_InsertPlayerEntities()
+        {
+            var tableId = Guid.NewGuid();
+            var players = new List<Player>
+            {
+                new Player("Player1"),
+                new Player("Player2")
+            };
+
+            this.repository.SavePlayerAll(tableId, players);
+
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString());
+
+            Assert.AreEqual(2, entities.Count());
+            Assert.AreEqual(players[0].Name, entities.Single(x => x.PlayerId == players[0].ID.ToString()).Name);
+            Assert.AreEqual(players[1].Name, entities.Single(x => x.PlayerId == players[1].ID.ToString()).Name);
+        }
+
+        /// <summary>
+        /// SavePlayerAll - all the players already exist in storage
+        /// the values should be updated instead of duplicating the records
+        /// or causing an exception
+        /// </summary>
+        [TestMethod]
+        public void SavePlayerAll_AllPlayersExist_Should_UpdatePlayerEntities()
+        {
+            // orginal table save
+            var tableId = Guid.NewGuid();
+            var players = new List<Player>
+            {
+                new Player("Player1"),
+                new Player("Player2")
+            };
+
+            this.repository.SavePlayerAll(tableId, players);
+
+            // change something and tell it to create again, should update the table
+            players[0].Name = "Player1-1";
+            players[1].Name = "Player2-1";
+
+            this.repository.SavePlayerAll(tableId, players);
+
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString());
+
+            Assert.AreEqual(2, entities.Count());
+            Assert.AreEqual(players[0].Name, entities.Single(x => x.PlayerId == players[0].ID.ToString()).Name);
+            Assert.AreEqual(players[1].Name, entities.Single(x => x.PlayerId == players[1].ID.ToString()).Name);
+        }
+
+        /// <summary>
+        /// Removing a player should remove the player entity from table storage
+        /// </summary>
+        [TestMethod]
+        public void RemovePlayer_Should_RemoveFromStorage()
+        {
+            var tableId = Guid.NewGuid();
+            var player = new Player("Test");
+            this.repository.SavePlayer(tableId, player);
+            this.repository.RemovePlayer(tableId, player);
+
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), string.Format("Player-{0}", player.ID));
+
+            Assert.AreEqual(0, entities.Count());
+        }
+
+        /// <summary>
+        /// SaveSeat when the seat does not exist it should be inserted
+        /// </summary>
+        [TestMethod]
+        public void SaveSeat_NoExisitingSeat_Should_InsertSeatEntity()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// SaveSeat and the seat exists it should update the seat
+        /// </summary>
+        [TestMethod]
+        public void SaveSeat_WithExisitingSeat_Should_UpdateValues()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// SaveSeatAll and none of the seats exist it should insert all of them
+        /// </summary>
+        [TestMethod]
+        public void SaveSeatAll_NoExisitingSeatRecords_Should_InsertSeatEntities()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// SaveSeatAll and all the seats exist all of them should be updated
+        /// </summary>
+        [TestMethod]
+        public void SaveSeatAll_AllSeatsExist_Should_UpdatePlayerEntities()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// RemoveSeat should remove the seat from table storage
+        /// </summary>
+        [TestMethod]
+        public void RemoveSeat_Should_RemoveFromStorage()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Gets the entities from azure storage
         /// </summary>
         /// <typeparam name="T">the type of TableEntity</typeparam>
@@ -137,6 +292,21 @@ namespace PokerTable.Game.Tests.Integration
                         TableOperators.And,
                         TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey)));
             
+            return this.table.ExecuteQuery(query).ToList();
+        }
+
+        /// <summary>
+        /// Gets the entities from azure storage
+        /// </summary>
+        /// <typeparam name="T">the type of TableEntity</typeparam>
+        /// <param name="partitionKey">The partition key.</param>
+        /// <returns>returns all entities of T</returns>
+        private List<T> GetEntities<T>(string partitionKey)
+            where T : TableEntity, new()
+        {
+            TableQuery<T> query = new TableQuery<T>().Where(                    
+                        TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+
             return this.table.ExecuteQuery(query).ToList();
         }
     }

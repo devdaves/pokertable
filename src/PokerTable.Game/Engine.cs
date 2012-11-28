@@ -318,7 +318,7 @@ namespace PokerTable.Game
 
                 if (saveNow)
                 {
-                    this.repository.AddSeat(this.Table.Id, seat);
+                    this.repository.SaveSeat(this.Table.Id, seat);
                 }
 
                 return true;
@@ -347,7 +347,7 @@ namespace PokerTable.Game
             this.Table.Seats.Remove(seatToRemove);
             this.Table.Seats.Where(x => x.Id > seatId).ToList().ForEach(s => s.Id = s.Id - 1);
             
-            this.repository.DeleteSeat(this.Table.Id, seatToRemove);
+            this.repository.RemoveSeat(this.Table.Id, seatToRemove);
             this.repository.SaveSeatAll(this.Table.Id, this.Table.Seats);
 
             return true;
@@ -367,7 +367,7 @@ namespace PokerTable.Game
                 if (!this.Table.Players.Any(x => x.ID == player.ID))
                 {
                     this.Table.Players.Add(player);
-                    this.repository.AddPlayer(this.Table.Id, player);
+                    this.repository.SavePlayer(this.Table.Id, player);
                     return true;
                 }
             }

@@ -13,13 +13,6 @@ namespace PokerTable.Game.Interfaces
     public interface IRepository
     {
         /// <summary>
-        /// Adds the player.
-        /// </summary>
-        /// <param name="tableId">The table id.</param>
-        /// <param name="player">The player.</param>
-        void AddPlayer(Guid tableId, Player player);
-
-        /// <summary>
         /// Saves the player.
         /// </summary>
         /// <param name="tableId">The table id.</param>
@@ -41,13 +34,6 @@ namespace PokerTable.Game.Interfaces
         void RemovePlayer(Guid tableId, Player player);
 
         /// <summary>
-        /// Adds the seat.
-        /// </summary>
-        /// <param name="tableId">The table id.</param>
-        /// <param name="seat">The seat.</param>
-        void AddSeat(Guid tableId, Seat seat);
-
-        /// <summary>
         /// Saves the seat.
         /// </summary>
         /// <param name="tableId">The table id.</param>
@@ -62,11 +48,11 @@ namespace PokerTable.Game.Interfaces
         void SaveSeatAll(Guid tableId, List<Seat> seats);
 
         /// <summary>
-        /// Deletes the seat.
+        /// Remove the seat.
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <param name="seat">The seat.</param>
-        void DeleteSeat(Guid tableId, Seat seat);
+        void RemoveSeat(Guid tableId, Seat seat);
 
         /// <summary>
         /// Saves the deck.
@@ -79,7 +65,7 @@ namespace PokerTable.Game.Interfaces
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns the table</returns>
-        ITable LoadTable(Guid tableId);
+        Table LoadTable(Guid tableId);
 
         /// <summary>
         /// Saves the table.
