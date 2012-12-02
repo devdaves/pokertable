@@ -171,6 +171,39 @@ namespace PokerTable.Game.Data
         }
 
         /// <summary>
+        /// Deletes the old tables.
+        /// </summary>
+        public void DeleteOldTables()
+        {
+            // Get a list of tables that have not been updated in the last 1 days
+            TableQuery<PokerTableEntity> pokerTableQuery = new TableQuery<PokerTableEntity>().Where(
+                TableQuery.CombineFilters(
+                    TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, PokerTableEntity.Prefix),
+                    TableOperators.And,
+                    TableQuery.GenerateFilterConditionForDate("LastUpdatedUTC", QueryComparisons.LessThan, DateTime.UtcNow.AddDays(-1))));
+            var pokerTableEntities = this.table.ExecuteQuery(pokerTableQuery).ToList();
+
+            if (pokerTableEntities.Count() > 0)
+            {
+                TableBatchOperation batchOperations = new TableBatchOperation();
+                foreach (var pokerTableEntity in pokerTableEntities)
+                {
+                    // get the seats for this table and put them in the list to delete
+                    this.GetEntities<SeatEntity>(pokerTableEntity.PartitionKey, SeatEntity.Prefix).ForEach(x => batchOperations.Delete(x));
+
+                    // get the players for this table and put them in the list to delete
+                    this.GetEntities<PlayerEntity>(pokerTableEntity.PartitionKey, PlayerEntity.Prefix).ForEach(x => batchOperations.Delete(x));
+
+                    // put the table in the list to delete
+                    batchOperations.Delete(pokerTableEntity);
+                }
+
+                // delete all the old tables and thier players and seats
+                this.table.ExecuteBatch(batchOperations);
+            }
+        }
+
+        /// <summary>
         /// Gets the entities.
         /// </summary>
         /// <typeparam name="T">the type of TableEntity</typeparam>

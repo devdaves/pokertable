@@ -59,6 +59,7 @@ namespace PokerTable.Game
             this.ShuffleDeck();
 
             this.repository.SaveTable(this.Table);
+            this.repository.DeleteOldTables();
         }
 
         /// <summary>

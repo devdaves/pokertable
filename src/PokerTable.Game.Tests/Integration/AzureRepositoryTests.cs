@@ -318,6 +318,30 @@ namespace PokerTable.Game.Tests.Integration
         }
 
         /// <summary>
+        /// Deleting old tables should delete old tables and their seats and players
+        /// </summary>
+        [TestMethod]
+        public void DeleteOldTables_Should_Delete_The_OldTables_And_Thier_Players_And_Seats()
+        {
+            // create table, seat and player
+            var tableId = Guid.NewGuid();
+            var pokerTableEntity = new PokerTableEntity(tableId) { LastUpdatedUTC = DateTime.UtcNow.AddDays(-2) };
+            var seatEntity = new SeatEntity(tableId, 1);
+            var playerEntity = new PlayerEntity(tableId, Guid.NewGuid());
+
+            // manually insert table, seat and player
+            this.table.Execute(TableOperation.InsertOrMerge(pokerTableEntity));
+            this.table.Execute(TableOperation.InsertOrMerge(seatEntity));
+            this.table.Execute(TableOperation.InsertOrMerge(playerEntity));
+
+            this.repository.DeleteOldTables();
+
+            Assert.AreEqual(0, this.GetEntities<PokerTableEntity>(tableId.ToString(), PokerTableEntity.Prefix).Count());
+            Assert.AreEqual(0, this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix).Count());
+            Assert.AreEqual(0, this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix).Count());
+        }
+
+        /// <summary>
         /// Load Table, table id does not exist, should throw TableDoesNotExistException
         /// </summary>
         [TestMethod]

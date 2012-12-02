@@ -66,5 +66,10 @@ namespace PokerTable.Game.Interfaces
         /// </summary>
         /// <param name="table">The table.</param>
         void SaveTable(Table table);
+
+        /// <summary>
+        /// Deletes the old tables.
+        /// </summary>
+        void DeleteOldTables();
     }
 }
