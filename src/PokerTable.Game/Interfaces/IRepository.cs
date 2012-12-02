@@ -71,5 +71,19 @@ namespace PokerTable.Game.Interfaces
         /// Deletes the old tables.
         /// </summary>
         void DeleteOldTables();
+
+        /// <summary>
+        /// Tables the password exists.
+        /// </summary>
+        /// <param name="tablePassword">The table password.</param>
+        /// <returns>returns true if the password exists</returns>
+        bool TablePasswordExists(string tablePassword);
+
+        /// <summary>
+        /// Gets the table id by table password.
+        /// </summary>
+        /// <param name="tablePassword">The table password.</param>
+        /// <returns>returns the GUID of the table null if it does not exist</returns>
+        Guid? GetTableIdByTablePassword(string tablePassword);
     }
 }

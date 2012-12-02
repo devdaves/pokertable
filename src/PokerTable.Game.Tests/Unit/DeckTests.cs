@@ -34,8 +34,9 @@ namespace PokerTable.Game.Tests.Unit
         public void Setup()
         {
             this.repositoryMock = new Mock<IRepository>();
+            this.repositoryMock.Setup(x => x.TablePasswordExists(It.IsAny<string>())).Returns(false);
             this.engine = new Engine(this.repositoryMock.Object);
-            this.engine.CreateNewTable(0, string.Empty, string.Empty);
+            this.engine.CreateNewTable(0, string.Empty);
         }
 
         /// <summary>

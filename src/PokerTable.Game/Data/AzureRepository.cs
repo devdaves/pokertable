@@ -204,6 +204,41 @@ namespace PokerTable.Game.Data
         }
 
         /// <summary>
+        /// Tables the password exists.
+        /// </summary>
+        /// <param name="tablePassword">The table password.</param>
+        /// <returns>
+        /// returns true if the password exists
+        /// </returns>
+        public bool TablePasswordExists(string tablePassword)
+        {
+            var query = new TableQuery<PokerTableEntity>().Where(
+                TableQuery.GenerateFilterCondition("Password", QueryComparisons.Equal, tablePassword));
+            var entites = this.table.ExecuteQuery(query).ToList();
+
+            return entites.Count() > 0;
+        }
+
+        /// <summary>
+        /// Gets the table id by table password.
+        /// </summary>
+        /// <param name="tablePassword">The table password.</param>
+        /// <returns>returns the GUID of the table null if it does not exist</returns>
+        public Guid? GetTableIdByTablePassword(string tablePassword)
+        {
+            var query = new TableQuery<PokerTableEntity>().Where(
+                TableQuery.GenerateFilterCondition("Password", QueryComparisons.Equal, tablePassword));
+            var entites = this.table.ExecuteQuery(query).ToList();
+
+            if (entites.Count() > 0)
+            {
+                return Guid.Parse(entites[0].PartitionKey);
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Gets the entities.
         /// </summary>
         /// <typeparam name="T">the type of TableEntity</typeparam>

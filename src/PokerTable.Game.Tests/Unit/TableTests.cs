@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -33,8 +34,9 @@ namespace PokerTable.Game.Tests.Unit
         public void Setup()
         {
             this.repositoryMock = new Mock<IRepository>();
+            this.repositoryMock.Setup(x => x.TablePasswordExists(It.IsAny<string>())).Returns(false);
             this.engine = new Engine(this.repositoryMock.Object);
-            this.engine.CreateNewTable(10, "TestName", "TestPassword");
+            this.engine.CreateNewTable(10, "TestName");
         }
 
         /// <summary>
@@ -53,8 +55,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void CreateNewTable_Stores_TablePassword()
         {
-            var expectedTablePassword = "TestPassword";
-            Assert.AreEqual(expectedTablePassword, this.engine.Table.Password);
+            Assert.AreEqual(5, this.engine.Table.Password.Length);
         }        
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void CreateNewTable_5Seats_Confirm_Creation()
         {
-            this.engine.CreateNewTable(5, string.Empty, string.Empty);
+            this.engine.CreateNewTable(5, string.Empty);
             Assert.AreEqual(5, this.engine.Table.Seats.Count());
         }
 
@@ -73,7 +74,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void CreateNewTable_0Seats_Seats_Should_Not_Be_Null()
         {
-           this.engine.CreateNewTable(0, string.Empty, string.Empty);
+           this.engine.CreateNewTable(0, string.Empty);
            Assert.IsNotNull(this.engine.Table.Seats);
         }
 
@@ -83,7 +84,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void CreateNewTable_Negative5Seats_Seats_Count_Should_Be_0()
         {
-            this.engine.CreateNewTable(-5, string.Empty, string.Empty);
+            this.engine.CreateNewTable(-5, string.Empty);
             Assert.AreEqual(0, this.engine.Table.Seats.Count());
         }
 
@@ -93,7 +94,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void AddSeat_WhenSeatsEmpty_SeatId_Should_Be_1()
         {
-            this.engine.CreateNewTable(0, string.Empty, string.Empty);
+            this.engine.CreateNewTable(0, string.Empty);
             this.engine.AddSeat();
             Assert.AreEqual(1, this.engine.Table.Seats[0].Id);
         }
@@ -104,7 +105,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void AddSeat_WhenSeatsHas1_SeatId_Should_Be_2()
         {
-            this.engine.CreateNewTable(1, string.Empty, string.Empty);
+            this.engine.CreateNewTable(1, string.Empty);
             this.engine.AddSeat();
             Assert.AreEqual(2, this.engine.Table.Seats[1].Id);
         }
@@ -115,7 +116,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void RemoveSeat_WhenSeatsEmpty_Should_Return_False()
         {
-            this.engine.CreateNewTable(0, string.Empty, string.Empty);
+            this.engine.CreateNewTable(0, string.Empty);
             var result = this.engine.RemoveSeat(0);
             Assert.IsFalse(result);
         }
@@ -126,7 +127,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void RemoveSeat_WhenSeatIdDoesNotExist_Should_Return_False()
         {
-            this.engine.CreateNewTable(1, string.Empty, string.Empty);
+            this.engine.CreateNewTable(1, string.Empty);
             var result = this.engine.RemoveSeat(4);
             Assert.IsFalse(result);
         }
@@ -137,7 +138,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void RemoveSeat_WhenSeatExists_Should_Return_True()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             var result = this.engine.RemoveSeat(3);
             Assert.IsTrue(result);
         }
@@ -148,7 +149,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void RemoveSeat_WhenSeatExists_Should_Remove_Seat()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             var result = this.engine.RemoveSeat(3);
             Assert.IsFalse(this.engine.Table.Seats.Any(x => x.Id == 3));                
         }
@@ -159,7 +160,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void RemoveSeat_WhenSeatExists_Remove2ndOf3Seats_Should_ReorderSeats()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.RemoveSeat(2);
             Assert.AreEqual(1, this.engine.Table.Seats[0].Id);
             Assert.AreEqual(2, this.engine.Table.Seats[1].Id);
@@ -192,7 +193,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void SetDealer_NoSeatsDefined_Should_Do_Nothing()
         {
-            this.engine.CreateNewTable(0, string.Empty, string.Empty);
+            this.engine.CreateNewTable(0, string.Empty);
             this.engine.SetDealer(1);
         }
 
@@ -202,7 +203,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void SetDealer_InvalidSeatId_DealerExists_Returns_False()
         {
-            this.engine.CreateNewTable(5, string.Empty, string.Empty);
+            this.engine.CreateNewTable(5, string.Empty);
             this.engine.SetDealer(1);
             this.engine.SetDealer(6);
             var result = this.engine.DealerExists();
@@ -227,7 +228,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void NextDealer_NoSeatsDefined_Should_Do_Nothing()
         {
-            this.engine.CreateNewTable(0, string.Empty, string.Empty);
+            this.engine.CreateNewTable(0, string.Empty);
             this.engine.NextDealer();
         }
 
@@ -246,7 +247,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void NextDealer_NoDelearsDefined_AllSeatsWithPlayers_FirstSeat_Should_Be_Dealer()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
 
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
@@ -266,7 +267,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void NextDealer_AllSeatsWtihPlayers_SeatOneIsDealer_NextDealer_Should_Be_SeatTwo()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -287,7 +288,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void NextDealer_Seat1Player_Seat2NoPlayer_Seat3Player_Seat1IsDealer_NextDealer_Should_Be_Seat3()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test3"));
 
@@ -306,7 +307,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void NextDealer_Seat1Player_Seat2PlayerSittingOut_Seat3Player_Seat1IsDealer_NextDealer_Should_Be_Seat3()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -434,7 +435,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void DealPlayers_EachAvailablePlayer_Should_Get_2_Cards()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -457,7 +458,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void DealPlayer_NotAvailablePlayers_Should_Not_Get_Cards()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -480,7 +481,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void DealPlayers_NoDealer_ShouldNotDealCards()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -503,7 +504,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void DealPlayers_3SeatsWithAvailablePlayers_Seat1IsDealer_ConfirmDealOrder()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -531,7 +532,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void DealPlayers_3SeatsWithAvailablePlayers_Seat2IsDealer_ConfirmDealOrder()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -559,7 +560,7 @@ namespace PokerTable.Game.Tests.Unit
         [TestMethod]
         public void DealPlayers_3SeatsWithAvailablePlayers_Seat3IsDealer_ConfirmDealOrder()
         {
-            this.engine.CreateNewTable(3, string.Empty, string.Empty);
+            this.engine.CreateNewTable(3, string.Empty);
             this.engine.AddPlayer(new Player("test1"));
             this.engine.AddPlayer(new Player("test2"));
             this.engine.AddPlayer(new Player("test3"));
@@ -866,6 +867,16 @@ namespace PokerTable.Game.Tests.Unit
         {
             var result = this.engine.RemovePlayerFromSeat(Guid.NewGuid());
             Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Build random code should return a string with a length of 5
+        /// </summary>
+        [TestMethod]
+        public void BuildRandomCode_Should_Return_String_With_Length_Of_5()
+        {
+            var result = this.engine.BuildRandomCode();
+            Assert.AreEqual(5, result.Length);
         }
     }
 }

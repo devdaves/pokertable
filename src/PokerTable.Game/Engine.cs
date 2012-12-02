@@ -16,6 +16,11 @@ namespace PokerTable.Game
     public class Engine
     {
         /// <summary>
+        /// Random Code Length constant
+        /// </summary>
+        private const int RandomCodeLength = 5;
+
+        /// <summary>
         /// repository field
         /// </summary>
         private IRepository repository;
@@ -50,10 +55,9 @@ namespace PokerTable.Game
         /// </summary>
         /// <param name="numberOfSeats">The number of seats.</param>
         /// <param name="name">The name.</param>
-        /// <param name="tablePassword">The table password.</param>
-        public void CreateNewTable(int numberOfSeats, string name, string tablePassword)
+        public void CreateNewTable(int numberOfSeats, string name)
         {
-            this.Table = new Table(name, tablePassword);
+            this.Table = new Table(name, this.GetNewTablePassword());
             this.AddManySeats(numberOfSeats);
             this.BuildDeck();
             this.ShuffleDeck();
@@ -74,25 +78,23 @@ namespace PokerTable.Game
         /// <summary>
         /// Joins the table.
         /// </summary>
-        /// <param name="tableId">The table id.</param>
         /// <param name="tablePassword">The table password.</param>
         /// <param name="playerName">Name of the player.</param>
-        /// <returns>returns the GUID of the player</returns>
-        public Guid JoinTable(Guid tableId, string tablePassword, string playerName)
+        /// <returns>
+        /// returns the GUID of the player
+        /// </returns>
+        public Guid JoinTable(string tablePassword, string playerName)
         {
-            if (this.Table.Id != tableId)
+            var tableId = this.repository.GetTableIdByTablePassword(tablePassword);
+            
+            if (tableId.HasValue)
             {
-                this.LoadTable(tableId);
+                this.LoadTable(tableId.Value);
             }
 
-            if (this.Table == null || this.Table.Id != tableId)
+            if (this.Table == null)
             {
                 throw new TableDoesNotExistException();
-            }
-
-            if (this.Table.Password != tablePassword)
-            {
-                throw new TablePasswordInvalidException();
             }
 
             var player = new Player(playerName);
@@ -478,6 +480,39 @@ namespace PokerTable.Game
         {
             this.Table.Players.ForEach(x => this.ResetPlayer(x.ID, false));
             this.repository.SavePlayerAll(this.Table.Id, this.Table.Players);
+        }
+
+        /// <summary>
+        /// Builds the random code.
+        /// </summary>
+        /// <returns>returns a string of random characters</returns>
+        internal string BuildRandomCode()
+        {
+            var code = string.Empty;
+            var random = new Random((int)DateTime.Now.Ticks);
+            while (code.Length < RandomCodeLength)
+            {
+                code = code + Convert.ToChar(random.Next(97, 122));
+            }
+
+            return code;
+        }
+
+        /// <summary>
+        /// Gets the new table password.
+        /// </summary>
+        /// <returns>returns a random password not already in use</returns>
+        internal string GetNewTablePassword()
+        {
+            var code = this.BuildRandomCode();
+            int count = 0;
+            while (this.repository.TablePasswordExists(code) || count < 5)
+            {
+                code = this.BuildRandomCode();
+                count++;
+            }
+
+            return code;
         }
 
         /// <summary>

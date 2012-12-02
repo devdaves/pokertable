@@ -389,13 +389,67 @@ namespace PokerTable.Game.Tests.Integration
         }
 
         /// <summary>
+        /// Checking a table password that is not in the table storage
+        /// should return false
+        /// </summary>
+        [TestMethod]
+        public void TablePasswordExists_NotInTable_Should_Return_False()
+        {
+            var code = "abcxy";
+            var result = this.repository.TablePasswordExists(code);
+            Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Check a table password that is in the table storage should
+        /// return true
+        /// </summary>
+        [TestMethod]
+        public void TablePasswordExists_InTable_Should_Return_True()
+        {
+            var code = "abcxy";
+            var table = new Table("Test", code);
+            this.repository.SaveTable(table);
+
+            var result = this.repository.TablePasswordExists(code);
+
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// Getting a table id by a invalid table password should return null
+        /// </summary>
+        [TestMethod]
+        public void GetTableIdByTablePassword_NotInTable_Should_Return_Null()
+        {
+            var code = "abcxy";
+            var result = this.repository.GetTableIdByTablePassword(code);
+            Assert.IsNull(result);
+        }
+
+        /// <summary>
+        /// Getting a table id by a valid table password should return the table ID
+        /// </summary>
+        [TestMethod]
+        public void GetTableIdByTablePassword_InTable_Should_Return_CorrectTableId()
+        {
+            var code = "abcxy";
+            var table = new Table("Test", code);
+            this.repository.SaveTable(table);
+
+            var result = this.repository.GetTableIdByTablePassword(code);
+
+            Assert.AreEqual(table.Id, result.Value);
+        }
+
+        /// <summary>
         /// Creates a new table with 5 seats and 5 players.  Saves table to storage
         /// </summary>
         /// <returns>returns GUID of table in storage</returns>
         private Guid CreateTableInStorage()
         {
             var engine = new Engine(new AzureRepository());
-            engine.CreateNewTable(5, "Test", "TestPassword");
+            engine.CreateNewTable(5, "Test");
             for (int i = 0; i < 5; i++)
             {
                 engine.AddPlayer(new Player(string.Format("Dave{0}", i + 1)));
