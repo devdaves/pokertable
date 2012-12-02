@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PokerTable.Game.Data;
 using PokerTable.Game.Exceptions;
 using PokerTable.Game.Interfaces;
 using PokerTable.Game.Models;
@@ -18,6 +19,14 @@ namespace PokerTable.Game
         /// repository field
         /// </summary>
         private IRepository repository;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Engine" /> class.
+        /// </summary>
+        public Engine()
+        {
+            this.repository = new AzureRepository();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Engine" /> class.
