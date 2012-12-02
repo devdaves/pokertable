@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using PokerTable.Game.AzureEntities;
 using PokerTable.Game.Data;
+using PokerTable.Game.Exceptions;
 using PokerTable.Game.Extensions;
 using PokerTable.Game.Interfaces;
 using PokerTable.Game.Models;
@@ -22,16 +23,6 @@ namespace PokerTable.Game.Tests.Integration
     [TestClass]
     public class AzureRepositoryTests
     {
-        /// <summary>
-        /// Azure Table Name
-        /// </summary>
-        private const string AzureTableName = "PokerTable";
-
-        /// <summary>
-        /// Azure Storage Connection String Key
-        /// </summary>
-        private const string AzureStorageConnectionStringKey = "AzureStorageConnectionString";
-
         /// <summary>
         /// azure client field
         /// </summary>
@@ -55,10 +46,10 @@ namespace PokerTable.Game.Tests.Integration
         {
             try
             {
-                var connectionString = ConfigurationManager.AppSettings[AzureStorageConnectionStringKey];
+                var connectionString = ConfigurationManager.AppSettings[AzureRepository.AzureStorageConnectionStringKey];
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
                 this.client = storageAccount.CreateCloudTableClient();
-                this.table = this.client.GetTableReference(AzureTableName);
+                this.table = this.client.GetTableReference(AzureRepository.AzureTableName);
                 this.table.CreateIfNotExists();
                 this.repository = new AzureRepository();
             }
@@ -92,7 +83,7 @@ namespace PokerTable.Game.Tests.Integration
             var table = new Table("Test", "TestPassword");
             this.repository.SaveTable(table);
 
-            var entities = this.GetEntities<PokerTableEntity>(table.Id.ToString(), "pokertable");
+            var entities = this.GetEntities<PokerTableEntity>(table.Id.ToString(), PokerTableEntity.Prefix);
 
             Assert.AreEqual(table.Id.ToString(), entities[0].PartitionKey);
             Assert.AreEqual(table.Name, entities[0].Name);
@@ -115,7 +106,7 @@ namespace PokerTable.Game.Tests.Integration
             table.Password = "TestPassword2";
             this.repository.SaveTable(table);
 
-            var entities = this.GetEntities<PokerTableEntity>(table.Id.ToString(), "pokertable");
+            var entities = this.GetEntities<PokerTableEntity>(table.Id.ToString(), PokerTableEntity.Prefix);
 
             Assert.AreEqual(1, entities.Count());
             Assert.AreEqual(table.Password, entities[0].Password);
@@ -132,7 +123,7 @@ namespace PokerTable.Game.Tests.Integration
             var player = new Player("Test");
             this.repository.SavePlayer(tableId, player);
 
-            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), string.Format("Player-{0}", player.ID));
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix);
 
             Assert.AreEqual(1, entities.Count());
             Assert.AreEqual(player.Name, entities[0].Name);
@@ -155,7 +146,7 @@ namespace PokerTable.Game.Tests.Integration
             player.Name = "Test2";
             this.repository.SavePlayer(tableId, player);
 
-            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), string.Format("Player-{0}", player.ID));
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix);
 
             Assert.AreEqual(1, entities.Count());
             Assert.AreEqual(player.Name, entities[0].Name);
@@ -177,7 +168,7 @@ namespace PokerTable.Game.Tests.Integration
 
             this.repository.SavePlayerAll(tableId, players);
 
-            var entities = this.GetEntities<PlayerEntity>(tableId.ToString());
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix);
 
             Assert.AreEqual(2, entities.Count());
             Assert.AreEqual(players[0].Name, entities.Single(x => x.PlayerId == players[0].ID.ToString()).Name);
@@ -208,7 +199,7 @@ namespace PokerTable.Game.Tests.Integration
 
             this.repository.SavePlayerAll(tableId, players);
 
-            var entities = this.GetEntities<PlayerEntity>(tableId.ToString());
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix);
 
             Assert.AreEqual(2, entities.Count());
             Assert.AreEqual(players[0].Name, entities.Single(x => x.PlayerId == players[0].ID.ToString()).Name);
@@ -226,7 +217,7 @@ namespace PokerTable.Game.Tests.Integration
             this.repository.SavePlayer(tableId, player);
             this.repository.RemovePlayer(tableId, player);
 
-            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), string.Format("Player-{0}", player.ID));
+            var entities = this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix);
 
             Assert.AreEqual(0, entities.Count());
         }
@@ -237,7 +228,14 @@ namespace PokerTable.Game.Tests.Integration
         [TestMethod]
         public void SaveSeat_NoExisitingSeat_Should_InsertSeatEntity()
         {
-            throw new NotImplementedException();
+            var tableId = Guid.NewGuid();
+            var seat = new Seat() { Id = 1 };
+            this.repository.SaveSeat(tableId, seat);
+
+            var entities = this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix);
+
+            Assert.AreEqual(1, entities.Count());
+            Assert.AreEqual(seat.Id, entities[0].SeatId);
         }
 
         /// <summary>
@@ -246,7 +244,17 @@ namespace PokerTable.Game.Tests.Integration
         [TestMethod]
         public void SaveSeat_WithExisitingSeat_Should_UpdateValues()
         {
-            throw new NotImplementedException();
+            var tableId = Guid.NewGuid();
+            var seat = new Seat() { Id = 1 };
+            this.repository.SaveSeat(tableId, seat);
+
+            seat.PlayerId = Guid.NewGuid();
+            this.repository.SaveSeat(tableId, seat);
+
+            var entities = this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix);
+
+            Assert.AreEqual(1, entities.Count());
+            Assert.AreEqual(seat.PlayerId.Value.ToString(), entities[0].PlayerId);
         }
 
         /// <summary>
@@ -255,7 +263,18 @@ namespace PokerTable.Game.Tests.Integration
         [TestMethod]
         public void SaveSeatAll_NoExisitingSeatRecords_Should_InsertSeatEntities()
         {
-            throw new NotImplementedException();
+            var tableId = Guid.NewGuid();
+            List<Seat> seats = new List<Seat>
+            {
+                new Seat() { Id = 1, PlayerId = Guid.NewGuid() },
+                new Seat() { Id = 2, PlayerId = Guid.NewGuid() },
+            };
+            this.repository.SaveSeatAll(tableId, seats);
+
+            var entities = this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix);
+
+            Assert.AreEqual(seats[0].PlayerId.Value.ToString(), entities.Single(x => x.SeatId == seats[0].Id).PlayerId);
+            Assert.AreEqual(seats[1].PlayerId.Value.ToString(), entities.Single(x => x.SeatId == seats[1].Id).PlayerId); 
         }
 
         /// <summary>
@@ -264,7 +283,22 @@ namespace PokerTable.Game.Tests.Integration
         [TestMethod]
         public void SaveSeatAll_AllSeatsExist_Should_UpdatePlayerEntities()
         {
-            throw new NotImplementedException();
+            var tableId = Guid.NewGuid();
+            List<Seat> seats = new List<Seat>
+            {
+                new Seat() { Id = 1, PlayerId = Guid.NewGuid() },
+                new Seat() { Id = 2, PlayerId = Guid.NewGuid() },
+            };
+            this.repository.SaveSeatAll(tableId, seats);
+
+            seats[0].IsDealer = true;
+            seats[1].IsDealer = true;
+            this.repository.SaveSeatAll(tableId, seats);
+
+            var entities = this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix);
+
+            Assert.AreEqual(seats[0].IsDealer, entities.Single(x => x.SeatId == seats[0].Id).IsDealer);
+            Assert.AreEqual(seats[1].IsDealer, entities.Single(x => x.SeatId == seats[1].Id).IsDealer); 
         }
 
         /// <summary>
@@ -273,41 +307,95 @@ namespace PokerTable.Game.Tests.Integration
         [TestMethod]
         public void RemoveSeat_Should_RemoveFromStorage()
         {
-            throw new NotImplementedException();
+            var tableId = Guid.NewGuid();
+            var seat = new Seat() { Id = 1 };
+            this.repository.SaveSeat(tableId, seat);
+            this.repository.RemoveSeat(tableId, seat);
+
+            var entities = this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix);
+
+            Assert.AreEqual(0, entities.Count());
         }
 
         /// <summary>
-        /// Gets the entities from azure storage
+        /// Load Table, table id does not exist, should throw TableDoesNotExistException
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(TableDoesNotExistException))]
+        public void LoadTable_Invalid_TableId_Should_Throw_TableDoesNotExistExcpetion()
+        {
+            this.repository.LoadTable(Guid.NewGuid());
+        }
+
+        /// <summary>
+        /// Load Table, table exists, should load table
+        /// </summary>
+        [TestMethod]
+        public void LoadTable_TableExists_Should_Load_Table()
+        {
+            var tableId = this.CreateTableInStorage();
+            var table = this.repository.LoadTable(tableId);
+
+            Assert.IsNotNull(table);
+            Assert.AreEqual(tableId, table.Id);
+        }
+
+        /// <summary>
+        /// Load Table, table exists, should load seats
+        /// </summary>
+        [TestMethod]
+        public void LoadTable_TableExists_Should_Load_Seats()
+        {
+            var tableId = this.CreateTableInStorage();
+            var table = this.repository.LoadTable(tableId);
+
+            Assert.AreEqual(5, table.Seats.Count());
+        }
+
+        /// <summary>
+        /// Load Table, table exists, should load players
+        /// </summary>
+        [TestMethod]
+        public void LoadTable_TableExists_Should_Load_Players()
+        {
+            var tableId = this.CreateTableInStorage();
+            var table = this.repository.LoadTable(tableId);
+
+            Assert.AreEqual(5, table.Players.Count());
+        }
+
+        /// <summary>
+        /// Creates a new table with 5 seats and 5 players.  Saves table to storage
+        /// </summary>
+        /// <returns>returns GUID of table in storage</returns>
+        private Guid CreateTableInStorage()
+        {
+            var engine = new Engine(new AzureRepository());
+            engine.CreateNewTable(5, "Test", "TestPassword");
+            for (int i = 0; i < 5; i++)
+            {
+                engine.AddPlayer(new Player(string.Format("Dave{0}", i + 1)));
+            }
+
+            return engine.Table.Id;
+        }
+
+        /// <summary>
+        /// Gets the entities.
         /// </summary>
         /// <typeparam name="T">the type of TableEntity</typeparam>
         /// <param name="partitionKey">The partition key.</param>
-        /// <param name="rowKey">The row key.</param>
-        /// <returns>returns a List of T</returns>
-        private List<T> GetEntities<T>(string partitionKey, string rowKey)
+        /// <param name="rowKeyPrefix">The row key prefix.</param>
+        /// <returns>returns all entities of T</returns>
+        private List<T> GetEntities<T>(string partitionKey, string rowKeyPrefix)
             where T : TableEntity, new()
         {
             TableQuery<T> query = new TableQuery<T>().Where(
-                    TableQuery.CombineFilters(
-                        TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey),
-                        TableOperators.And,
-                        TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, rowKey)));
-            
-            return this.table.ExecuteQuery(query).ToList();
-        }
+                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
 
-        /// <summary>
-        /// Gets the entities from azure storage
-        /// </summary>
-        /// <typeparam name="T">the type of TableEntity</typeparam>
-        /// <param name="partitionKey">The partition key.</param>
-        /// <returns>returns all entities of T</returns>
-        private List<T> GetEntities<T>(string partitionKey)
-            where T : TableEntity, new()
-        {
-            TableQuery<T> query = new TableQuery<T>().Where(                    
-                        TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+            var entities = this.table.ExecuteQuery(query).ToList();
 
-            return this.table.ExecuteQuery(query).ToList();
+            return entities.Where(x => x.RowKey.StartsWith(rowKeyPrefix)).ToList();
         }
     }
 }

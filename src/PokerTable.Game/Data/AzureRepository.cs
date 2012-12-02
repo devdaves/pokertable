@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using PokerTable.Game.AzureEntities;
+using PokerTable.Game.Exceptions;
 using PokerTable.Game.Extensions;
 using PokerTable.Game.Interfaces;
 using PokerTable.Game.Models;
@@ -18,14 +20,14 @@ namespace PokerTable.Game.Data
     internal class AzureRepository : IRepository
     {
         /// <summary>
-        /// Azure Table Name (if this changes, change in integration tests also)
+        /// Azure Table Name
         /// </summary>
-        private const string AzureTableName = "PokerTable";
+        internal const string AzureTableName = "PokerTable";
 
         /// <summary>
-        /// Azure Storage Connection String Key (if this changes, change in integration tests also)
+        /// Azure Storage Connection String Key
         /// </summary>
-        private const string AzureStorageConnectionStringKey = "AzureStorageConnectionString";
+        internal const string AzureStorageConnectionStringKey = "AzureStorageConnectionString";
 
         /// <summary>
         /// azure client field
@@ -134,15 +136,6 @@ namespace PokerTable.Game.Data
         }
 
         /// <summary>
-        /// Saves the deck.
-        /// </summary>
-        /// <param name="table">The table.</param>
-        public void SaveDeck(Table table)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Loads the table.
         /// </summary>
         /// <param name="tableId">The table id.</param>
@@ -151,7 +144,19 @@ namespace PokerTable.Game.Data
         /// </returns>
         public Table LoadTable(Guid tableId)
         {
-            throw new NotImplementedException();
+            var tableEntities = this.GetEntities<PokerTableEntity>(tableId.ToString(), PokerTableEntity.Prefix);
+            var seatEntities = this.GetEntities<SeatEntity>(tableId.ToString(), SeatEntity.Prefix);
+            var playerEntites = this.GetEntities<PlayerEntity>(tableId.ToString(), PlayerEntity.Prefix);
+
+            if (tableEntities.Count() == 0)
+            {
+                throw new TableDoesNotExistException();
+            }
+
+            var pokerTable = tableEntities[0].ToTableModel();
+            pokerTable.Seats = seatEntities.ToSeatModelList();
+            pokerTable.Players = playerEntites.ToPlayerModelList();
+            return pokerTable;
         }
 
         /// <summary>
@@ -163,6 +168,24 @@ namespace PokerTable.Game.Data
             var entity = table.ToPokerTableEntity();
             TableOperation insertOperation = TableOperation.InsertOrMerge(entity);
             this.table.Execute(insertOperation);
+        }
+
+        /// <summary>
+        /// Gets the entities.
+        /// </summary>
+        /// <typeparam name="T">the type of TableEntity</typeparam>
+        /// <param name="partitionKey">The partition key.</param>
+        /// <param name="rowKeyPrefix">The row key prefix.</param>
+        /// <returns>returns all entities of T</returns>
+        private List<T> GetEntities<T>(string partitionKey, string rowKeyPrefix)
+            where T : TableEntity, new()
+        {
+            TableQuery<T> query = new TableQuery<T>().Where(
+                TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey));
+
+            var entities = this.table.ExecuteQuery(query).ToList();
+
+            return entities.Where(x => x.RowKey.StartsWith(rowKeyPrefix)).ToList();
         }
     }
 }

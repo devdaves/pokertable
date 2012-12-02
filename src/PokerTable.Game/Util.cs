@@ -37,7 +37,13 @@ namespace PokerTable.Game
         /// <param name="objectToDeSerialize">The object to de serialize.</param>
         /// <returns>returns the deserialized object</returns>
         internal static T DeSerialize<T>(string objectToDeSerialize)
+            where T : new()
         {
+            if (string.IsNullOrEmpty(objectToDeSerialize))
+            {
+                return new T();
+            }
+
             StringReader read = new StringReader(objectToDeSerialize);
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             XmlReader reader = new XmlTextReader(read);

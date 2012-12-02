@@ -55,12 +55,6 @@ namespace PokerTable.Game.Interfaces
         void RemoveSeat(Guid tableId, Seat seat);
 
         /// <summary>
-        /// Saves the deck.
-        /// </summary>
-        /// <param name="table">The table.</param>
-        void SaveDeck(Table table);
-
-        /// <summary>
         /// Loads the table.
         /// </summary>
         /// <param name="tableId">The table id.</param>

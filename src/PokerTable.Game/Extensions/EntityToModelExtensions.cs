@@ -32,6 +32,22 @@ namespace PokerTable.Game.Extensions
         }
 
         /// <summary>
+        /// To the seat model list.
+        /// </summary>
+        /// <param name="seatEntities">The seat entities.</param>
+        /// <returns>returns a list of seats</returns>
+        internal static List<Seat> ToSeatModelList(this List<SeatEntity> seatEntities)
+        {
+            List<Seat> seats = new List<Seat>();
+            foreach (var entity in seatEntities)
+            {
+                seats.Add(entity.ToSeatModel());
+            }
+
+            return seats;
+        }
+
+        /// <summary>
         /// To the player model.
         /// </summary>
         /// <param name="playerEntity">The player entity.</param>
@@ -43,6 +59,22 @@ namespace PokerTable.Game.Extensions
             player.State = (Player.States)playerEntity.State;
             player.Cards = Util.DeSerialize<List<Card>>(playerEntity.Cards);
             return player;
+        }
+
+        /// <summary>
+        /// To the player model list.
+        /// </summary>
+        /// <param name="playerEntities">The player entities.</param>
+        /// <returns>returns a list of players</returns>
+        internal static List<Player> ToPlayerModelList(this List<PlayerEntity> playerEntities)
+        {
+            List<Player> players = new List<Player>();
+            foreach (var entity in playerEntities)
+            {
+                players.Add(entity.ToPlayerModel());
+            }
+
+            return players;
         }
 
         /// <summary>

@@ -118,7 +118,7 @@ namespace PokerTable.Game.Tests.Unit
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(PokerTableEntity));
             Assert.AreEqual(table.Id.ToString(), result.PartitionKey);
-            Assert.AreEqual("pokertable", result.RowKey);
+            Assert.AreEqual(PokerTableEntity.Prefix, result.RowKey);
             Assert.AreEqual(table.Name, result.Name);
             Assert.AreEqual(table.Password, result.Password);
             Assert.IsTrue(!string.IsNullOrEmpty(result.Deck));
@@ -173,6 +173,27 @@ namespace PokerTable.Game.Tests.Unit
         }
 
         /// <summary>
+        /// To Seat Model List should convert a list of SeatEntities to a list of
+        /// seat models.
+        /// </summary>
+        [TestMethod]
+        public void ToSeatModelList_Should_Return_List_Of_Seats()
+        {
+            var tableId = Guid.NewGuid();
+            List<SeatEntity> seatEntities = new List<SeatEntity>()
+            {
+                new SeatEntity(tableId, 1) { SeatId = 1 },
+                new SeatEntity(tableId, 2) { SeatId = 2 },
+            };
+
+            var results = seatEntities.ToSeatModelList();
+
+            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual(1, results[0].Id);
+            Assert.AreEqual(2, results[1].Id);
+        }
+
+        /// <summary>
         /// ToPlayerModel should convert a player entity to a player model with the correct values
         /// </summary>
         [TestMethod]
@@ -215,6 +236,29 @@ namespace PokerTable.Game.Tests.Unit
             var playerModel = playerEntity.ToPlayerModel();
 
             Assert.AreEqual(0, playerModel.Cards.Count());
+        }
+
+        /// <summary>
+        /// To Player Model List should convert a list of PlayerEntities to a list of 
+        /// player models.
+        /// </summary>
+        [TestMethod]
+        public void ToPlayerModelList_Should_Return_List_Of_Players()
+        {
+            var tableId = Guid.NewGuid();
+            var player1Id = Guid.NewGuid();
+            var player2Id = Guid.NewGuid();
+            List<PlayerEntity> playerEntities = new List<PlayerEntity>()
+            {
+                new PlayerEntity(tableId, player1Id) { PlayerId = player1Id.ToString(), Name = "player1" },
+                new PlayerEntity(tableId, player2Id) { PlayerId = player2Id.ToString(), Name = "player2" }
+            };
+
+            var results = playerEntities.ToPlayerModelList();
+
+            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual("player1", results[0].Name);
+            Assert.AreEqual("player2", results[1].Name);
         }
 
         /// <summary>

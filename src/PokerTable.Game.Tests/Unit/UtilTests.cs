@@ -70,5 +70,16 @@ namespace PokerTable.Game.Tests.Unit
             Assert.AreEqual(card.State, deserialized[0].State);
             Assert.AreEqual(card.Value, deserialized[0].Value);
         }
+
+        /// <summary>
+        /// trying to deserialize a list of cards with a null string should return a empty list of cards
+        /// </summary>
+        [TestMethod]
+        public void Deserilaize_ToListCards_Empty_String_Should_Return_EmptyListCards()
+        {
+            var deserialized = Util.DeSerialize<List<Card>>(null);
+            Assert.IsNotNull(deserialized);
+            Assert.AreEqual(0, deserialized.Count());
+        }
     }
 }

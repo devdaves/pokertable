@@ -58,7 +58,7 @@ namespace PokerTable.Game
         /// <param name="tableId">The table id.</param>
         public void LoadTable(Guid tableId)
         {
-            this.repository.LoadTable(tableId);
+            this.Table = this.repository.LoadTable(tableId);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace PokerTable.Game
         public void ShuffleDeck()
         {
             this.Table.Deck.Cards = this.Table.Deck.Cards.OrderBy(x => Guid.NewGuid()).ToList();
-            this.repository.SaveDeck(this.Table);
+            this.repository.SaveTable(this.Table);
         }
 
         /// <summary>

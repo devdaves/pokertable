@@ -13,6 +13,11 @@ namespace PokerTable.Game.AzureEntities
     internal class PokerTableEntity : TableEntity
     {
         /// <summary>
+        /// Prefix used for row key
+        /// </summary>
+        public const string Prefix = "PokerTable";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PokerTableEntity" /> class.
         /// </summary>
         public PokerTableEntity()
@@ -26,7 +31,7 @@ namespace PokerTable.Game.AzureEntities
         public PokerTableEntity(Guid tableId)
         {
             this.PartitionKey = tableId.ToString();
-            this.RowKey = "pokertable";
+            this.RowKey = Prefix;
         }
 
         /// <summary>
