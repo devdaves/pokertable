@@ -28,7 +28,7 @@
     </div>
     <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal">Close</a>
-        <a href="#" class="btn btn-primary" id="createTableButton">Create Table</a>
+        <a href="#" class="btn btn-primary" id="createTableButton" data-loading-text="one momment...">Create Table</a>
     </div>
 </div>
 <div id="JoinTable" class="modal hide fade">
@@ -50,11 +50,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#createTableButton").click(function () {
-                var tableName = $("#tableName").val();
+                var tname = $("#tableName").val();
+                var button = $("#createTableButton");
+                $(button).button('loading');
                 $.ajax({
+                    dataType: "json",
                     url: "/Engine/CreateTable",
                     type: "post",
-                    data: { tableName: tableName },
+                    data: { tableName: tname },
                     success: function (response) {
                         console.log(response);
                         if (response.result == "fail") {
@@ -64,8 +67,15 @@
                             var tableId = response.tableId;
                             window.location = "/Engine/TableView?tableId=" + tableId;
                         }
-
-                    }
+                        $(button).button('reset');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        // log the error to the console
+                        console.log(
+                            "The following error occured: " +
+                            textStatus, errorThrown
+                        );
+                    },
                 });
             });
 
