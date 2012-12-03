@@ -185,9 +185,10 @@ namespace PokerTable.Game.Data
 
             if (pokerTableEntities.Count() > 0)
             {
-                TableBatchOperation batchOperations = new TableBatchOperation();
                 foreach (var pokerTableEntity in pokerTableEntities)
                 {
+                    TableBatchOperation batchOperations = new TableBatchOperation();
+
                     // get the seats for this table and put them in the list to delete
                     this.GetEntities<SeatEntity>(pokerTableEntity.PartitionKey, SeatEntity.Prefix).ForEach(x => batchOperations.Delete(x));
 
@@ -196,10 +197,9 @@ namespace PokerTable.Game.Data
 
                     // put the table in the list to delete
                     batchOperations.Delete(pokerTableEntity);
-                }
 
-                // delete all the old tables and thier players and seats
-                this.table.ExecuteBatch(batchOperations);
+                    this.table.ExecuteBatch(batchOperations);
+                }               
             }
         }
 
