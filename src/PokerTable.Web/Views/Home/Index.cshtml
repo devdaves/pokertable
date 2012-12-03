@@ -1,5 +1,77 @@
 ﻿@{
     ViewBag.Title = "Index";
 }
+<div class="container-fluid">
+    <div class="row">
+        <div class="span6 offset3">
+            <h1>Texas Hold-em Poker</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6 offset3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#JoinTable">Join existing table</button>
+            <p>Join as a player to an existing table with your mobile device.  Once connected and assigned to a seat you will be eligible to receive hold cards during the next round of play.</p>    
+            <hr />
+            <button class="btn btn-primary" data-toggle="modal" data-target="#CreateTableModal">Create a new table</button>
+            <p>Creating a new poker table creates a place for players to play poker together.  Using thier mobile phone they can connect to the poker table.  Once connected they will get thier hold cards on thier phone. </p>    
+        </div>
+    </div>
+</div>
+<div id="CreateTableModal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Create a new table</h3>
+    </div>
+    <div class="modal-body">
+        <p>To get started type the name of the table below</p>
+        <input type="text" id="tableName" class="input-block-level" placeholder="Table name">
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" id="createTableButton">Create Table</a>
+    </div>
+</div>
+<div id="JoinTable" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Join existing table</h3>
+    </div>
+    <div class="modal-body">
+        <p>To get started type the table code below</p>
+        <input type="text" id="tableCode" class="input-block-level" placeholder="Table code">
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn btn-primary" id="joinTableButton">Join Table</a>
+    </div>
+</div>
 
-<h2>Index</h2>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#createTableButton").click(function () {
+                var tableName = $("#tableName").val();
+                $.ajax({
+                    url: "/Engine/CreateTable",
+                    type: "post",
+                    data: { tableName: tableName },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.result == "fail") {
+                            alert("fail message here, refactor this away some day");
+                            alert(response.message);
+                        } else {
+                            var tableId = response.tableId;
+                            window.location = "/Engine/TableView?tableId=" + tableId;
+                        }
+
+                    }
+                });
+            });
+
+            $("#joinTableButton").click(function () {
+                alert("Not coded yet.");
+            });
+        });
+    </script>    
+}
