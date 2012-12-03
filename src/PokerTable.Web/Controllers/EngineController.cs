@@ -50,16 +50,6 @@ namespace PokerTable.Web.Controllers
         }
 
         /// <summary>
-        /// Tests the table create.
-        /// </summary>
-        /// <returns>returns a GUID of the table created.</returns>
-        public ActionResult TestTableCreate()
-        {
-            this.engine.CreateNewTable(10, "abc123");
-            return new ContentResult() { Content = this.engine.Table.Id.ToString() };
-        }
-
-        /// <summary>
         /// Table view.
         /// </summary>
         /// <param name="tableId">The table id.</param>
