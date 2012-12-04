@@ -13,7 +13,7 @@ namespace PokerTable.Game
     /// <summary>
     /// Engine Object
     /// </summary>
-    public class Engine
+    public class Engine : IEngine
     {
         /// <summary>
         /// Random Code Length constant

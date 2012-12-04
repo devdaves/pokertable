@@ -64,6 +64,7 @@
     <Compile Include="AzureEntities\PokerTableEntity.cs" />
     <Compile Include="Extensions\EntityToModelExtensions.cs" />
     <Compile Include="Extensions\ModelToEntityExtensions.cs" />
+    <Compile Include="Interfaces\IEngine.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Engine.cs" />

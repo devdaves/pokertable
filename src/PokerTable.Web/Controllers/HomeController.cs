@@ -18,7 +18,7 @@ namespace PokerTable.Web.Controllers
         /// <returns>the index view</returns>
         public ActionResult Index()
         {
-            return this.View();
+            return this.View("Index");
         }
     }
 }

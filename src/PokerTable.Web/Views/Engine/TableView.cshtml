@@ -1,5 +1,9 @@
-﻿@{
-    ViewBag.Title = "TableView";
+﻿@model PokerTable.Web.ViewModels.TableViewViewModel
+
+@{
+    ViewBag.Title = Model.Table.Name;
 }
 
-<h2>TableView</h2>
+Table Name: @Model.Table.Name
+<br />
+Table Code: @Model.Table.Password
