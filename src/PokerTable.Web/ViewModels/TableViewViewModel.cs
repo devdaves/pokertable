@@ -18,5 +18,13 @@ namespace PokerTable.Web.ViewModels
         /// The table.
         /// </value>
         public Table Table { get; set; }
+
+        /// <summary>
+        /// Gets or sets the table JSON.
+        /// </summary>
+        /// <value>
+        /// The table JSON.
+        /// </value>
+        public string TableJSON { get; set; }
     }
 }

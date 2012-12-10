@@ -24,6 +24,10 @@ namespace PokerTable.Web
                         "~/Scripts/jquery.unobtrusive*",
                         "~/Scripts/jquery.validate*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/ko").Include(
+                "~/Scripts/knockout-2.2.0.js",
+                "~/Scripts/knockout.mapping-latest.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                 "~/Scripts/bootstrap.js"));
 

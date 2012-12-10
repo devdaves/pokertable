@@ -44,7 +44,7 @@ namespace PokerTable.Game.Extensions
                 seats.Add(entity.ToSeatModel());
             }
 
-            return seats;
+            return seats.OrderBy(x => x.Id).ToList();
         }
 
         /// <summary>

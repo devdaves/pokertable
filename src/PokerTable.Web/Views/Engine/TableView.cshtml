@@ -3,7 +3,477 @@
 @{
     ViewBag.Title = Model.Table.Name;
 }
+<div class="container">
+    <div class="row">
+        <div class="span9">
+            <h1><span data-bind="text: Name"></span></h1>
+        </div>
+        <div class="span3">
+            <div class="tableCode">
+                Code: <span data-bind="text: Password"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3">
+            <div id="Seats" data-bind="foreach: Seats">
+                <div data-bind="css: CssClass, text: Name, attr: { 'data-seatId': Id, 'data-playerId': PlayerId }"></div>
+            </div>
+            <span>(select a seat for options...)</span>
+        </div>
+        <div class="span9">
+            <div class="row">
+                <div class="span9">
+                    <button id="ResetTable" class="btn btn-large">Reset Table</button>
+                    <button id="DealPlayers" class="btn btn-large">Deal Players</button>
+                    <button id="DealFlop" class="btn btn-large">Deal Flop</button>
+                    <button id="DealTurn" class="btn btn-large">Deal Turn</button>
+                    <button id="DealRiver" class="btn btn-large">Deal River</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span9">
+                    <div id="PublicCards" data-bind="foreach: PublicCards">
+                        <span data-bind="css: HtmlCssClass, text: StringValue"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-Table Name: @Model.Table.Name
-<br />
-Table Code: @Model.Table.Password
+<div id="TableCodeInfoModal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Table Code Info</h3>
+    </div>
+    <div class="modal-body">
+        Connect to: 
+        <span>http://pokertable.azurewebsites.net</span> <hr /> 
+        Table Code: 
+        <span data-bind="text: Password"></span>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-large" data-dismiss="modal">Close</a>
+    </div>
+</div>
+
+<div id="SeatOptionsModal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Seat <span class="optionsSeatNumber"></span> Options</h3>        
+    </div>
+    <div class="modal-body">
+        Select player for seat <span class="optionsSeatNumber"></span>:
+        <div id="PlayerContainer" data-bind="foreach: Players">
+            <div class="player" data-bind="text: Name, attr: {'data-playerid': Id}"></div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-large" data-dismiss="modal">Close</a>
+    </div>
+</div>
+
+<div id="SeatOccupiedOptionsModal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Seat <span class="optionsSeatNumber"></span> Options</h3>        
+    </div>
+    <div class="modal-body">
+        <button id="MakeDealer" class="btn btn-primary btn-large">Make Dealer</button>
+        <hr />
+        <button id="RemovePlayer" class="btn btn-primary btn-large">Remove Player</button>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-large" data-dismiss="modal">Close</a>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        table =@Html.Raw(Model.TableJSON);
+
+        var CardModel = function() {
+            var self = this;
+
+            self.Color = ko.observable();
+            self.State = ko.observable();
+            self.Suite = ko.observable();
+            self.Value = ko.observable();
+            self.HtmlCssClass = ko.observable();
+            self.StringValue = ko.observable();
+
+            self.loadData = function(data){
+                self.Color(data.Color);
+                self.State(data.State);
+                self.Suite(data.Suite);
+                self.Value(data.Value);
+                self.HtmlCssClass(data.HtmlCssClass);
+                self.StringValue(data.StringValue);
+
+                return self;
+            };
+        }
+
+        var PlayerModel = function() {
+            var self = this;
+
+            self.Id = ko.observable();
+            self.Name = ko.observable();
+            self.State = ko.observable();
+            self.Cards = ko.observableArray([]);
+
+            self.loadData = function(data){
+                self.Id(data.ID);
+                self.Name(data.Name);
+                self.State(data.State);
+                self.Cards(ko.utils.arrayMap(data.Cards, function(card) {
+                    return new CardModel().loadData(card); 
+                }));
+                return self;
+            };
+        }
+
+        var SeatModel = function(){
+            var self = this;
+
+            self.Id = ko.observable();
+            self.PlayerId = ko.observable();
+            self.Name = ko.observable();
+            self.CssClass = ko.observable();
+
+            self.loadData = function(data, players)
+            {
+                self.Id(data.Id);
+                if (data.PlayerId === null) {
+                    self.PlayerId('');
+                    self.Name('Seat ' + data.Id);
+                    self.CssClass("seat");    
+                } else {
+                    var player = $.grep(players, function(e){ return e.ID === data.PlayerId });
+                    if (player.length == 0) {
+                        self.Name("Not Exist");
+                    }
+                    else {
+                        self.Name(player[0].Name + '(' + player[0].Cards.length + ')');
+                    }
+                    self.PlayerId(data.PlayerId);
+                    self.CssClass("seatOccupied");    
+                }
+
+                return self;
+            };
+        }
+
+        var TableModel = function(){
+            var self = this;
+
+            self.Name = ko.observable();
+            self.Password = ko.observable();
+            self.Seats = ko.observableArray([]);
+            self.Players = ko.observableArray([]);
+            self.PublicCards = ko.observableArray([]);
+
+            self.loadData = function(data){
+                self.Name(data.Name);
+                self.Password(data.Password);
+                self.Seats(ko.utils.arrayMap(data.Seats, function(seat) {
+                    return new SeatModel().loadData(seat, data.Players);
+                }));
+                self.Players(ko.utils.arrayMap(data.Players, function(player) {
+                    return new PlayerModel().loadData(player);
+                }));
+                self.PublicCards(ko.utils.arrayMap(data.PublicCards, function(card){
+                    return new CardModel().loadData(card);
+                }));
+            };
+        }
+
+        var Engine = function(){
+            var viewModel = new TableModel();
+            var tableId = '';
+
+            var selectors = {
+                TableCode: '.tableCode',
+                SeatContainer: '#Seats',
+                SeatCssClass: '.seat',
+                SeatOccupiedCssClass: '.seatOccupied',
+                PlayerContainer: '#PlayerContainer',
+                PlayerCssClass: '.player',
+                MakeDealerButton: '#MakeDealer',
+                RemovePlayerButton: '#RemovePlayer',
+                ResetTableButton: '#ResetTable',
+                DealPlayersButton: '#DealPlayers',
+                DealFlopButton: '#DealFlop',
+                DealTurnButton: '#DealTurn',
+                DealRiverButton: '#DealRiver'
+            }
+
+            var urls = {
+                AssignSeatToPlayer: '/Engine/AssignSeatToPlayer',
+                SetSeatAsDealer: '/Engine/SetSeatAsDealer',
+                DealPlayers: '/Engine/DealPlayers',
+                DealFlop: '/Engine/DealFlop',
+                DealTurn: '/Engine/DealTurn',
+                DealRiver: '/Engine/DealRiver',
+                ResetTable: '/Engine/ResetTable'
+            }
+
+            var events = {
+                seatOptions: function(){
+                    var seatId = $(this).data('seatid');
+
+                    $(".optionsSeatNumber").html(seatId);
+                    $(".player").data('seatid', seatId);
+                    $('#SeatOptionsModal').modal('show')
+                },
+                seatOccupiedOptions: function(){
+                    var seatId = $(this).data('seatid');
+                    var playerId = $(this).data('playerid');
+
+                    $(".optionsSeatNumber").html(seatId);
+
+                    $("#MakeDealer").data('seatid', seatId).data('playerid', playerId);
+                    $("#RemovePlayer").data('seatid', seatId).data('playerid', playerId);
+
+                    $('#SeatOccupiedOptionsModal').modal('show')                    
+                },
+                seatOptionsPlayerSelected: function(){
+                    var seatId = $(this).data('seatid');
+                    var playerId = $(this).data('playerid');
+                    AssignSeatToPlayer(seatId, playerId);             
+                },
+                showCodeInfo: function(){
+                    $('#TableCodeInfoModal').modal('show')
+                },
+                makeDealer: function(){
+                    var seatId = $(this).data('seatid');
+                    SetSeatAsDealer(seatId);
+                },
+                removePlayer: function(){
+                    var seatId = $(this).data('seatid');
+                    var playerId = $(this).data('playerid');
+                    console.log(seatId);
+                    console.log(playerId);
+                },
+                resetTable: function(){
+                    ResetTable();
+                },
+                dealPlayers: function(){
+                    DealPlayers();
+                },
+                dealFlop: function(){
+                    DealFlop();
+                },
+                dealTurn: function(){
+                    DealTurn();
+                },
+                dealRiver: function(){
+                    DealRiver();
+                }
+
+            };
+
+            var Ajax_Error = function (jqXHR, textStatus, errorThrown) {
+                // log the error to the console
+                console.log(
+                    "The following error occured: " +
+                    textStatus, errorThrown
+                );
+            }
+
+            var AssignSeatToPlayer = function(seatId, playerId){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.AssignSeatToPlayer,
+                    type: "post",
+                    data: {
+                        'tableId': tableId,
+                        'seatId': seatId,
+                        'playerId': playerId
+                    },
+                    success: AssignSeatToPlayer_Success,
+                    error: Ajax_Error
+                })
+            }
+
+            var AssignSeatToPlayer_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+                $('#SeatOptionsModal').modal('hide')                
+            }
+
+            var SetSeatAsDealer = function(seatId){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.SetSeatAsDealer,
+                    type: "post",
+                    data: {
+                        'tableId': tableId,
+                        'seatId': seatId
+                    },
+                    success: SetSeatAsDealer_Success,
+                    error: Ajax_Error
+                })
+            }
+
+            var SetSeatAsDealer_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+                $('#SeatOccupiedOptionsModal').modal('hide');
+            }
+
+            var DealPlayers = function(){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.DealPlayers,
+                    type: "post",
+                    data: {
+                        'tableId': tableId
+                    },
+                    success: DealPlayers_Success,
+                    error: Ajax_Error
+                })                
+            }
+
+            var DealPlayers_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+            }
+
+            var DealFlop = function(){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.DealFlop,
+                    type: "post",
+                    data: {
+                        'tableId': tableId
+                    },
+                    success: DealFlop_Success,
+                    error: Ajax_Error
+                })                
+            }
+
+            var DealFlop_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+            }
+
+            var DealTurn = function(){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.DealTurn,
+                    type: "post",
+                    data: {
+                        'tableId': tableId
+                    },
+                    success: DealTurn_Success,
+                    error: Ajax_Error
+                })                
+            }
+
+            var DealTurn_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+            }
+
+            var DealRiver = function(){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.DealRiver,
+                    type: "post",
+                    data: {
+                        'tableId': tableId
+                    },
+                    success: DealRiver_Success,
+                    error: Ajax_Error
+                })                
+            }
+
+            var DealRiver_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+            }
+
+            var ResetTable = function(){
+                $.ajax({
+                    dataType: "json",
+                    url: urls.ResetTable,
+                    type: "post",
+                    data: {
+                        'tableId': tableId
+                    },
+                    success: ResetTable_Success,
+                    error: Ajax_Error
+                })                
+            }
+
+            var ResetTable_Success = function(response){
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+            }
+
+            var setupEvents = function(){
+                $(selectors.SeatContainer).on('click', selectors.SeatCssClass, events.seatOptions);
+                $(selectors.SeatContainer).on('click', selectors.SeatOccupiedCssClass, events.seatOccupiedOptions);
+                $(selectors.PlayerContainer).on('click', selectors.PlayerCssClass, events.seatOptionsPlayerSelected);
+                $(selectors.MakeDealerButton).click(events.makeDealer);
+                $(selectors.RemovePlayerButton).click(events.removePlayer);
+                $(selectors.TableCode).click(events.showCodeInfo);
+                $(selectors.ResetTableButton).click(events.resetTable);
+                $(selectors.DealPlayersButton).click(events.dealPlayers);
+                $(selectors.DealFlopButton).click(events.dealFlop);
+                $(selectors.DealTurnButton).click(events.dealTurn);
+                $(selectors.DealRiverButton).click(events.dealRiver);
+            };
+
+            var loadData = function(data){
+                tableId = data.Id;
+                viewModel.loadData(data);
+            };
+        
+            var init = function(){
+                loadData(table);
+                setupEvents();
+                ko.applyBindings(viewModel);
+            };
+
+            return {
+                init: init,
+                loadData: loadData
+            };
+        }();
+
+        $(document).ready(function () {
+            Engine.init();
+        });
+    </script>    
+}

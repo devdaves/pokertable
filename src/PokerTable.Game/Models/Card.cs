@@ -96,6 +96,34 @@ namespace PokerTable.Game.Models
         public States State { get; set; }
 
         /// <summary>
+        /// Gets the string value.
+        /// </summary>
+        /// <value>
+        /// The string value.
+        /// </value>
+        public string StringValue
+        {
+            get
+            {
+                return this.ValueToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the HTML CSS class.
+        /// </summary>
+        /// <value>
+        /// The HTML CSS class.
+        /// </value>
+        public string HtmlCssClass
+        {
+            get
+            {
+                return this.SuiteToHtmlClass();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the value.
         /// </summary>
         /// <value>
@@ -155,6 +183,27 @@ namespace PokerTable.Game.Models
                     return "H";
                 case Suites.Diamonds:
                     return "D";
+                default:
+                    throw new ArgumentException("Suite is required");
+            }
+        }
+
+        /// <summary>
+        /// Suites to HTML CSS class.
+        /// </summary>
+        /// <returns>returns the HTML CSS class for the suite</returns>
+        private string SuiteToHtmlClass()
+        {
+            switch (this.Suite)
+            {
+                case Suites.Clubs:
+                    return "clubs";
+                case Suites.Spades:
+                    return "spades";
+                case Suites.Hearts:
+                    return "hearts";
+                case Suites.Diamonds:
+                    return "diamonds";
                 default:
                     throw new ArgumentException("Suite is required");
             }
