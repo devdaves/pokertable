@@ -75,5 +75,45 @@ namespace PokerTable.Game.Interfaces
         /// The public cards.
         /// </value>
         List<Card> PublicCards { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether [reset table available].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [reset table available]; otherwise, <c>false</c>.
+        /// </value>
+        bool ResetTableAvailable { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether [deal players available].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if [deal players available]; otherwise, <c>false</c>.
+        /// </value>
+        bool DealPlayersAvailable { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether [deal flop available].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [deal flop available]; otherwise, <c>false</c>.
+        /// </value>
+        bool DealFlopAvailable { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether [deal turn available].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [deal turn available]; otherwise, <c>false</c>.
+        /// </value>
+        bool DealTurnAvailable { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether [deal river available].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [deal river available]; otherwise, <c>false</c>.
+        /// </value>
+        bool DealRiverAvailable { get; }
     }
 }

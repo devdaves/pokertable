@@ -247,6 +247,7 @@ namespace PokerTable.Game
                     }
                 }
 
+                this.repository.SaveTable(this.Table);
                 this.repository.SavePlayerAll(this.Table.Id, this.Table.Players);
             }
         }

@@ -24,11 +24,7 @@
         <div class="span9">
             <div class="row">
                 <div class="span9">
-                    <button id="ResetTable" class="btn btn-large">Reset Table</button>
-                    <button id="DealPlayers" class="btn btn-large">Deal Players</button>
-                    <button id="DealFlop" class="btn btn-large">Deal Flop</button>
-                    <button id="DealTurn" class="btn btn-large">Deal Turn</button>
-                    <button id="DealRiver" class="btn btn-large">Deal River</button>
+                    <button id="TableActions" class="btn btn-large btn-block btn-primary">Actions</button>
                 </div>
             </div>
             <div class="row">
@@ -80,9 +76,25 @@
         <h3>Seat <span class="optionsSeatNumber"></span> Options</h3>        
     </div>
     <div class="modal-body">
-        <button id="MakeDealer" class="btn btn-primary btn-large">Make Dealer</button>
-        <hr />
-        <button id="RemovePlayer" class="btn btn-primary btn-large">Remove Player</button>
+        <p><button id="MakeDealer" class="btn btn-primary btn-block btn-large">Make Dealer</button></p>
+        <p><button id="RemovePlayer" class="btn btn-primary btn-block btn-large">Remove Player</button></p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-large" data-dismiss="modal">Close</a>
+    </div>
+</div>
+
+<div id="TableActionsModal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Table Actions</h3>        
+    </div>
+    <div class="modal-body">
+        <p><button id="ResetTable" class="btn btn-large btn-block" data-bind="enable: ResetTableAvailable">Reset Table</button></p>
+        <p><button id="DealPlayers" class="btn btn-large btn-block" data-bind="enable: DealPlayersAvailable">Deal Players</button></p>
+        <p><button id="DealFlop" class="btn btn-large btn-block" data-bind="enable: DealFlopAvailable">Deal Flop</button></p>
+        <p><button id="DealTurn" class="btn btn-large btn-block" data-bind="enable: DealTurnAvailable">Deal Turn</button></p>
+        <p><button id="DealRiver" class="btn btn-large btn-block" data-bind="enable: DealRiverAvailable">Deal River</button></p>
     </div>
     <div class="modal-footer">
         <a href="#" class="btn btn-large" data-dismiss="modal">Close</a>
@@ -161,6 +173,10 @@
                     self.CssClass("seatOccupied");    
                 }
 
+                if (data.IsDealer) {
+                    self.CssClass("seatDealer");
+                }
+
                 return self;
             };
         }
@@ -173,6 +189,11 @@
             self.Seats = ko.observableArray([]);
             self.Players = ko.observableArray([]);
             self.PublicCards = ko.observableArray([]);
+            self.ResetTableAvailable = ko.observable();
+            self.DealPlayersAvailable = ko.observable();
+            self.DealFlopAvailable = ko.observable();
+            self.DealTurnAvailable = ko.observable();
+            self.DealRiverAvailable = ko.observable();
 
             self.loadData = function(data){
                 self.Name(data.Name);
@@ -186,6 +207,11 @@
                 self.PublicCards(ko.utils.arrayMap(data.PublicCards, function(card){
                     return new CardModel().loadData(card);
                 }));
+                self.ResetTableAvailable(data.ResetTableAvailable);
+                self.DealPlayersAvailable(data.DealPlayersAvailable);
+                self.DealFlopAvailable(data.DealFlopAvailable);
+                self.DealTurnAvailable(data.DealTurnAvailable);
+                self.DealRiverAvailable(data.DealRiverAvailable);
             };
         }
 
@@ -206,7 +232,8 @@
                 DealPlayersButton: '#DealPlayers',
                 DealFlopButton: '#DealFlop',
                 DealTurnButton: '#DealTurn',
-                DealRiverButton: '#DealRiver'
+                DealRiverButton: '#DealRiver',
+                TableActionsButton: '#TableActions'
             }
 
             var urls = {
@@ -270,6 +297,9 @@
                 },
                 dealRiver: function(){
                     DealRiver();
+                },
+                showTableActions: function(){
+                    $('#TableActionsModal').modal('show')
                 }
 
             };
@@ -351,6 +381,7 @@
                 } else {
                     loadData(response.table);
                 }
+                $('#TableActionsModal').modal('hide');
             }
 
             var DealFlop = function(){
@@ -373,6 +404,7 @@
                 } else {
                     loadData(response.table);
                 }
+                $('#TableActionsModal').modal('hide');
             }
 
             var DealTurn = function(){
@@ -395,6 +427,7 @@
                 } else {
                     loadData(response.table);
                 }
+                $('#TableActionsModal').modal('hide');
             }
 
             var DealRiver = function(){
@@ -417,6 +450,7 @@
                 } else {
                     loadData(response.table);
                 }
+                $('#TableActionsModal').modal('hide');
             }
 
             var ResetTable = function(){
@@ -429,7 +463,7 @@
                     },
                     success: ResetTable_Success,
                     error: Ajax_Error
-                })                
+                })
             }
 
             var ResetTable_Success = function(response){
@@ -439,6 +473,7 @@
                 } else {
                     loadData(response.table);
                 }
+                $('#TableActionsModal').modal('hide');
             }
 
             var setupEvents = function(){
@@ -453,6 +488,7 @@
                 $(selectors.DealFlopButton).click(events.dealFlop);
                 $(selectors.DealTurnButton).click(events.dealTurn);
                 $(selectors.DealRiverButton).click(events.dealRiver);
+                $(selectors.TableActionsButton).click(events.showTableActions);
             };
 
             var loadData = function(data){

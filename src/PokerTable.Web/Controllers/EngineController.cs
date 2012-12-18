@@ -108,6 +108,7 @@ namespace PokerTable.Web.Controllers
         /// <param name="tableId">The table id.</param>
         /// <param name="seatId">The seat id.</param>
         /// <returns>returns JSON result</returns>
+        [HttpPost]
         public JsonResult SetSeatAsDealer(Guid tableId, int seatId)
         {
             this.engine.LoadTable(tableId);
@@ -127,6 +128,7 @@ namespace PokerTable.Web.Controllers
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns JSON result</returns>
+        [HttpPost]
         public JsonResult DealPlayers(Guid tableId)
         {
             // TODO: error checking
@@ -147,6 +149,7 @@ namespace PokerTable.Web.Controllers
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns JSON result</returns>
+        [HttpPost]
         public JsonResult DealFlop(Guid tableId)
         { 
             // TODO: error checking
@@ -167,6 +170,7 @@ namespace PokerTable.Web.Controllers
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns JSON result</returns>
+        [HttpPost] 
         public JsonResult DealTurn(Guid tableId)
         {
             // TODO: error checking
@@ -187,6 +191,7 @@ namespace PokerTable.Web.Controllers
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns JSON result</returns>
+        [HttpPost] 
         public JsonResult DealRiver(Guid tableId)
         {
             // TODO: error checking
@@ -207,11 +212,13 @@ namespace PokerTable.Web.Controllers
         /// </summary>
         /// <param name="tableId">The table id.</param>
         /// <returns>returns JSON result</returns>
+        [HttpPost]
         public JsonResult ResetTable(Guid tableId)
         {
             // TODO: error checking
             this.engine.LoadTable(tableId);
             this.engine.ResetTable();
+            this.engine.NextDealer();
 
             var response = new
             {
