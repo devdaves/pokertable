@@ -65,11 +65,11 @@
         if (response.result == "fail") {
             // refactor this away
             alert(response.message);
+            $(button).button('reset');
         } else {
             var tableId = response.tableId;
             window.location = urls.TableView + "?tableId=" + tableId;
         }
-        $(button).button('reset');
     }
 
     var Ajax_Error = function (jqXHR, textStatus, errorThrown) {

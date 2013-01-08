@@ -24,7 +24,30 @@
         <div class="span9">
             <div class="row">
                 <div class="span9">
-                    <button id="TableActions" class="btn btn-large btn-block btn-primary">Actions</button>
+                    <button id="TableActions" class="btn btn-large btn-block btn-primary" data-toggle="collapse" data-target="#tableActions">Actions</button>
+                    <div id="tableActions" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <!-- ko if: ResetTableAvailable -->
+                                <p><button id="ResetTable" class="btn btn-large btn-block" data-bind="enable: ResetTableAvailable">Reset Table</button></p>
+                            <!-- /ko -->
+
+                            <!-- ko if: DealPlayersAvailable -->
+                            <p><button id="DealPlayers" class="btn btn-large btn-block" data-bind="enable: DealPlayersAvailable">Deal Players</button></p>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: DealFlopAvailable -->
+                            <p><button id="DealFlop" class="btn btn-large btn-block" data-bind="enable: DealFlopAvailable">Deal Flop</button></p>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: DealTurnAvailable -->
+                            <p><button id="DealTurn" class="btn btn-large btn-block" data-bind="enable: DealTurnAvailable">Deal Turn</button></p>
+                            <!-- /ko -->
+                            
+                            <!-- ko if: DealRiverAvailable -->
+                                <p><button id="DealRiver" class="btn btn-large btn-block" data-bind="enable: DealRiverAvailable">Deal River</button></p>
+                            <!-- /ko -->
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -90,11 +113,7 @@
         <h3>Table Actions</h3>        
     </div>
     <div class="modal-body">
-        <p><button id="ResetTable" class="btn btn-large btn-block" data-bind="enable: ResetTableAvailable">Reset Table</button></p>
-        <p><button id="DealPlayers" class="btn btn-large btn-block" data-bind="enable: DealPlayersAvailable">Deal Players</button></p>
-        <p><button id="DealFlop" class="btn btn-large btn-block" data-bind="enable: DealFlopAvailable">Deal Flop</button></p>
-        <p><button id="DealTurn" class="btn btn-large btn-block" data-bind="enable: DealTurnAvailable">Deal Turn</button></p>
-        <p><button id="DealRiver" class="btn btn-large btn-block" data-bind="enable: DealRiverAvailable">Deal River</button></p>
+
     </div>
     <div class="modal-footer">
         <a href="#" class="btn btn-large" data-dismiss="modal">Close</a>
@@ -233,7 +252,8 @@
                 DealFlopButton: '#DealFlop',
                 DealTurnButton: '#DealTurn',
                 DealRiverButton: '#DealRiver',
-                TableActionsButton: '#TableActions'
+                TableActionsButton: '#TableActions',
+                TableActionsContainer: '#tableActions'
             }
 
             var urls = {
@@ -297,11 +317,7 @@
                 },
                 dealRiver: function(){
                     DealRiver();
-                },
-                showTableActions: function(){
-                    $('#TableActionsModal').modal('show')
                 }
-
             };
 
             var Ajax_Error = function (jqXHR, textStatus, errorThrown) {
@@ -381,7 +397,7 @@
                 } else {
                     loadData(response.table);
                 }
-                $('#TableActionsModal').modal('hide');
+                $(".collapse").collapse('hide');
             }
 
             var DealFlop = function(){
@@ -404,7 +420,7 @@
                 } else {
                     loadData(response.table);
                 }
-                $('#TableActionsModal').modal('hide');
+                $(".collapse").collapse('hide');
             }
 
             var DealTurn = function(){
@@ -427,7 +443,7 @@
                 } else {
                     loadData(response.table);
                 }
-                $('#TableActionsModal').modal('hide');
+                $(".collapse").collapse('hide');
             }
 
             var DealRiver = function(){
@@ -450,7 +466,7 @@
                 } else {
                     loadData(response.table);
                 }
-                $('#TableActionsModal').modal('hide');
+                $(".collapse").collapse('hide');
             }
 
             var ResetTable = function(){
@@ -473,7 +489,7 @@
                 } else {
                     loadData(response.table);
                 }
-                $('#TableActionsModal').modal('hide');
+                $(".collapse").collapse('hide');
             }
 
             var setupEvents = function(){
@@ -483,12 +499,12 @@
                 $(selectors.MakeDealerButton).click(events.makeDealer);
                 $(selectors.RemovePlayerButton).click(events.removePlayer);
                 $(selectors.TableCode).click(events.showCodeInfo);
-                $(selectors.ResetTableButton).click(events.resetTable);
-                $(selectors.DealPlayersButton).click(events.dealPlayers);
-                $(selectors.DealFlopButton).click(events.dealFlop);
-                $(selectors.DealTurnButton).click(events.dealTurn);
-                $(selectors.DealRiverButton).click(events.dealRiver);
-                $(selectors.TableActionsButton).click(events.showTableActions);
+
+                $(selectors.TableActionsContainer).on('click', selectors.ResetTableButton, events.resetTable);
+                $(selectors.TableActionsContainer).on('click', selectors.DealPlayersButton, events.dealPlayers);
+                $(selectors.TableActionsContainer).on('click', selectors.DealFlopButton, events.dealFlop);
+                $(selectors.TableActionsContainer).on('click', selectors.DealTurnButton, events.dealTurn);
+                $(selectors.TableActionsContainer).on('click', selectors.DealRiverButton, events.dealRiver);    
             };
 
             var loadData = function(data){
