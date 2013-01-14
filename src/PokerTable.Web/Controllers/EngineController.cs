@@ -4,9 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using Microsoft.AspNet.SignalR;
 using PokerTable.Game;
 using PokerTable.Game.Exceptions;
 using PokerTable.Game.Interfaces;
+using PokerTable.Web.Hubs;
 using PokerTable.Web.ViewModels;
 
 namespace PokerTable.Web.Controllers
@@ -230,6 +232,25 @@ namespace PokerTable.Web.Controllers
         }
 
         /// <summary>
+        /// Refresh Table
+        /// </summary>
+        /// <param name="tableId">The table id</param>
+        /// <returns>returns JSON result</returns>
+        [HttpPost]
+        public JsonResult RefreshTable(Guid tableId)
+        {
+            this.engine.LoadTable(tableId);
+            
+            var response = new
+            {
+                result = "success",
+                message = "Table Refreshed",
+                table = this.engine.Table
+            };
+            return new JsonResult() { Data = response };
+        }
+
+        /// <summary>
         /// Creates the table.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
@@ -282,6 +303,11 @@ namespace PokerTable.Web.Controllers
                     tableId = this.engine.Table.Id,
                     playerId = playerId
                 };
+
+                // broadcast over the hub to refresh the table;
+                var context = GlobalHost.ConnectionManager.GetHubContext<PokerTableHub>();
+                context.Clients.All.refreshTable();
+
                 return new JsonResult() { Data = response };
             }
             catch (Exception)

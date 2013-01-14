@@ -121,6 +121,9 @@
 </div>
 
 @section scripts {
+    <script src="~/Scripts/jquery.signalR-1.0.0-rc1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    
     <script type="text/javascript">
         table =@Html.Raw(Model.TableJSON);
 
@@ -254,7 +257,7 @@
                 DealRiverButton: '#DealRiver',
                 TableActionsButton: '#TableActions',
                 TableActionsContainer: '#tableActions'
-            }
+            };
 
             var urls = {
                 AssignSeatToPlayer: '/Engine/AssignSeatToPlayer',
@@ -263,8 +266,9 @@
                 DealFlop: '/Engine/DealFlop',
                 DealTurn: '/Engine/DealTurn',
                 DealRiver: '/Engine/DealRiver',
-                ResetTable: '/Engine/ResetTable'
-            }
+                ResetTable: '/Engine/ResetTable',
+                RefreshTable: '/Engine/RefreshTable'
+            };
 
             var events = {
                 seatOptions: function(){
@@ -492,6 +496,28 @@
                 $(".collapse").collapse('hide');
             }
 
+            var RefreshTable = function() {
+                $.ajax({
+                    dataType: "json",
+                    url: urls.RefreshTable,
+                    type: "post",
+                    data: {
+                        'tableId': tableId
+                    },
+                    success: RefreshTable_Success,
+                    error: Ajax_Error
+                });
+            };
+
+            var RefreshTable_Success = function(response) {
+                if (response.result == "fail") {
+                    // refactor this away
+                    alert(response.message);
+                } else {
+                    loadData(response.table);
+                }
+            };
+
             var setupEvents = function(){
                 $(selectors.SeatContainer).on('click', selectors.SeatCssClass, events.seatOptions);
                 $(selectors.SeatContainer).on('click', selectors.SeatOccupiedCssClass, events.seatOccupiedOptions);
@@ -520,12 +546,21 @@
 
             return {
                 init: init,
-                loadData: loadData
+                loadData: loadData,
+                refreshTable: RefreshTable
             };
         }();
 
         $(document).ready(function () {
             Engine.init();
+            
+            var tableHub = $.connection.pokerTableHub;
+            
+            tableHub.client.refreshTable = function () {
+                Engine.refreshTable();
+            };
+
+            $.connection.hub.start();
         });
     </script>    
 }
