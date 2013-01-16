@@ -147,8 +147,7 @@
 
                 return self;
             };
-        }
-
+        };
         var PlayerModel = function() {
             var self = this;
 
@@ -166,8 +165,7 @@
                 }));
                 return self;
             };
-        }
-
+        };
         var SeatModel = function(){
             var self = this;
 
@@ -184,7 +182,7 @@
                     self.Name('Seat ' + data.Id);
                     self.CssClass("seat");    
                 } else {
-                    var player = $.grep(players, function(e){ return e.ID === data.PlayerId });
+                    var player = $.grep(players, function(e){ return e.ID === data.PlayerId; });
                     if (player.length == 0) {
                         self.Name("Not Exist");
                     }
@@ -201,8 +199,7 @@
 
                 return self;
             };
-        }
-
+        };
         var TableModel = function(){
             var self = this;
 
@@ -235,8 +232,7 @@
                 self.DealTurnAvailable(data.DealTurnAvailable);
                 self.DealRiverAvailable(data.DealRiverAvailable);
             };
-        }
-
+        };
         var Engine = function(){
             var viewModel = new TableModel();
             var tableId = '';
@@ -276,7 +272,7 @@
 
                     $(".optionsSeatNumber").html(seatId);
                     $(".player").data('seatid', seatId);
-                    $('#SeatOptionsModal').modal('show')
+                    $('#SeatOptionsModal').modal('show');
                 },
                 seatOccupiedOptions: function(){
                     var seatId = $(this).data('seatid');
@@ -287,7 +283,7 @@
                     $("#MakeDealer").data('seatid', seatId).data('playerid', playerId);
                     $("#RemovePlayer").data('seatid', seatId).data('playerid', playerId);
 
-                    $('#SeatOccupiedOptionsModal').modal('show')                    
+                    $('#SeatOccupiedOptionsModal').modal('show');
                 },
                 seatOptionsPlayerSelected: function(){
                     var seatId = $(this).data('seatid');
@@ -295,7 +291,7 @@
                     AssignSeatToPlayer(seatId, playerId);             
                 },
                 showCodeInfo: function(){
-                    $('#TableCodeInfoModal').modal('show')
+                    $('#TableCodeInfoModal').modal('show');
                 },
                 makeDealer: function(){
                     var seatId = $(this).data('seatid');
@@ -324,54 +320,54 @@
                 }
             };
 
-            var Ajax_Error = function (jqXHR, textStatus, errorThrown) {
+            var Ajax_Error = function(jqXHR, textStatus, errorThrown) {
                 // log the error to the console
                 console.log(
                     "The following error occured: " +
-                    textStatus, errorThrown
+                        textStatus, errorThrown
                 );
-            }
+            };
 
-            var AssignSeatToPlayer = function(seatId, playerId){
+            var AssignSeatToPlayer = function(seatId, playerId) {
                 $.ajax({
                     dataType: "json",
                     url: urls.AssignSeatToPlayer,
                     type: "post",
                     data: {
-                        'tableId': tableId,
+                        'tableId': Engine.tableId,
                         'seatId': seatId,
                         'playerId': playerId
                     },
                     success: AssignSeatToPlayer_Success,
                     error: Ajax_Error
-                })
-            }
+                });
+            };
 
-            var AssignSeatToPlayer_Success = function(response){
+            var AssignSeatToPlayer_Success = function(response) {
                 if (response.result == "fail") {
                     // refactor this away
                     alert(response.message);
                 } else {
                     loadData(response.table);
                 }
-                $('#SeatOptionsModal').modal('hide')                
-            }
+                $('#SeatOptionsModal').modal('hide');
+            };
 
-            var SetSeatAsDealer = function(seatId){
+            var SetSeatAsDealer = function(seatId) {
                 $.ajax({
                     dataType: "json",
                     url: urls.SetSeatAsDealer,
                     type: "post",
                     data: {
-                        'tableId': tableId,
+                        'tableId': Engine.tableId,
                         'seatId': seatId
                     },
                     success: SetSeatAsDealer_Success,
                     error: Ajax_Error
-                })
-            }
+                });
+            };
 
-            var SetSeatAsDealer_Success = function(response){
+            var SetSeatAsDealer_Success = function(response) {
                 if (response.result == "fail") {
                     // refactor this away
                     alert(response.message);
@@ -379,22 +375,22 @@
                     loadData(response.table);
                 }
                 $('#SeatOccupiedOptionsModal').modal('hide');
-            }
+            };
 
-            var DealPlayers = function(){
+            var DealPlayers = function() {
                 $.ajax({
                     dataType: "json",
                     url: urls.DealPlayers,
                     type: "post",
                     data: {
-                        'tableId': tableId
+                        'tableId': Engine.tableId
                     },
                     success: DealPlayers_Success,
                     error: Ajax_Error
-                })                
-            }
+                });
+            };
 
-            var DealPlayers_Success = function(response){
+            var DealPlayers_Success = function(response) {
                 if (response.result == "fail") {
                     // refactor this away
                     alert(response.message);
@@ -402,22 +398,22 @@
                     loadData(response.table);
                 }
                 $(".collapse").collapse('hide');
-            }
+            };
 
-            var DealFlop = function(){
+            var DealFlop = function() {
                 $.ajax({
                     dataType: "json",
                     url: urls.DealFlop,
                     type: "post",
                     data: {
-                        'tableId': tableId
+                        'tableId': Engine.tableId
                     },
                     success: DealFlop_Success,
                     error: Ajax_Error
-                })                
-            }
+                });
+            };
 
-            var DealFlop_Success = function(response){
+            var DealFlop_Success = function(response) {
                 if (response.result == "fail") {
                     // refactor this away
                     alert(response.message);
@@ -425,22 +421,22 @@
                     loadData(response.table);
                 }
                 $(".collapse").collapse('hide');
-            }
+            };
 
-            var DealTurn = function(){
+            var DealTurn = function() {
                 $.ajax({
                     dataType: "json",
                     url: urls.DealTurn,
                     type: "post",
                     data: {
-                        'tableId': tableId
+                        'tableId': Engine.tableId
                     },
                     success: DealTurn_Success,
                     error: Ajax_Error
-                })                
-            }
+                });
+            };
 
-            var DealTurn_Success = function(response){
+            var DealTurn_Success = function(response) {
                 if (response.result == "fail") {
                     // refactor this away
                     alert(response.message);
@@ -448,7 +444,7 @@
                     loadData(response.table);
                 }
                 $(".collapse").collapse('hide');
-            }
+            };
 
             var DealRiver = function(){
                 $.ajax({
@@ -456,13 +452,13 @@
                     url: urls.DealRiver,
                     type: "post",
                     data: {
-                        'tableId': tableId
+                        'tableId': Engine.tableId
                     },
                     success: DealRiver_Success,
                     error: Ajax_Error
-                })                
-            }
-
+                });
+            };
+            
             var DealRiver_Success = function(response){
                 if (response.result == "fail") {
                     // refactor this away
@@ -471,22 +467,22 @@
                     loadData(response.table);
                 }
                 $(".collapse").collapse('hide');
-            }
-
+            };
+            
             var ResetTable = function(){
                 $.ajax({
                     dataType: "json",
                     url: urls.ResetTable,
                     type: "post",
                     data: {
-                        'tableId': tableId
+                        'tableId': Engine.tableId
                     },
                     success: ResetTable_Success,
                     error: Ajax_Error
-                })
-            }
-
-            var ResetTable_Success = function(response){
+                });
+            };
+            
+            var ResetTable_Success = function(response) {
                 if (response.result == "fail") {
                     // refactor this away
                     alert(response.message);
@@ -494,7 +490,7 @@
                     loadData(response.table);
                 }
                 $(".collapse").collapse('hide');
-            }
+            };
 
             var RefreshTable = function() {
                 $.ajax({
@@ -502,7 +498,7 @@
                     url: urls.RefreshTable,
                     type: "post",
                     data: {
-                        'tableId': tableId
+                        'tableId': Engine.tableId
                     },
                     success: RefreshTable_Success,
                     error: Ajax_Error
@@ -534,7 +530,7 @@
             };
 
             var loadData = function(data){
-                tableId = data.Id;
+                Engine.tableId = data.Id;
                 viewModel.loadData(data);
             };
         
@@ -546,21 +542,29 @@
 
             return {
                 init: init,
+                tableId: tableId,
                 loadData: loadData,
                 refreshTable: RefreshTable
             };
         }();
 
         $(document).ready(function () {
+            //start the engine
             Engine.init();
             
+            //create connection to hub
             var tableHub = $.connection.pokerTableHub;
             
+            //function called by signalr
             tableHub.client.refreshTable = function () {
+                console.log("refreshing table");
                 Engine.refreshTable();
             };
 
-            $.connection.hub.start();
+            //start the connection and join this tables group
+            $.connection.hub.start().done(function () {
+                tableHub.server.joinGroup(Engine.tableId);
+            });
         });
-    </script>    
+    </script>
 }

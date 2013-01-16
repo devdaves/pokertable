@@ -8,11 +8,21 @@ namespace PokerTable.Web.Hubs
     public class PokerTableHub : Hub
     {
         /// <summary>
-        /// Refresh 
+        /// Join a group
         /// </summary>
-        public void RefreshTable()
+        /// <param name="groupName">Name of group to join</param>
+        public void JoinGroup(string groupName)
         {
-            Clients.All.refreshTable();
+            Groups.Add(Context.ConnectionId, groupName);
+        }
+
+        /// <summary>
+        /// Leave a group
+        /// </summary>
+        /// <param name="groupName">Name of Group to leave.</param>
+        public void LeaveGroup(string groupName)
+        {
+            Groups.Remove(Context.ConnectionId, groupName);
         }
     }
 }

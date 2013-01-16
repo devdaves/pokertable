@@ -304,10 +304,10 @@ namespace PokerTable.Web.Controllers
                     playerId = playerId
                 };
 
-                // broadcast over the hub to refresh the table;
+                // broadcast to the table group to refresh the table
                 var context = GlobalHost.ConnectionManager.GetHubContext<PokerTableHub>();
-                context.Clients.All.refreshTable();
-
+                context.Clients.Group(this.engine.Table.Id.ToString()).refreshTable();
+ 
                 return new JsonResult() { Data = response };
             }
             catch (Exception)
