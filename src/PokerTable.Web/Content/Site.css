@@ -1,157 +1,42 @@
 ﻿body {
-    font-size: .85em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
-    color: #232323;
-    background-color: #fff;
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
-header, footer, nav, section {
-    display: block;
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
-
-/* Styles for basic forms
------------------------------------------------------------*/
-fieldset {
-    border: 1px solid #ddd;
-    padding: 0 1.4em 1.4em 1.4em;
-    margin: 0 0 1.5em 0;
-}
-
-legend {
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
 textarea {
-    min-height: 75px;
+    max-width: 280px;
 }
 
-.editor-label {
-    margin: 1em 0 0 0;
-}
-
-.editor-field {
-    margin: 0.5em 0 0 0;
-}
-
-
-/* Styles for validation helpers
------------------------------------------------------------*/
+/* styles for validation helpers */
 .field-validation-error {
-    color: #f00;
+    color: #b94a48;
 }
 
 .field-validation-valid {
     display: none;
 }
 
-.input-validation-error {
-    border: 1px solid #f00;
-    background-color: #fee;
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
 }
 
 .validation-summary-errors {
-    font-weight: bold;
-    color: #f00;
+    color: #b94a48;
 }
 
 .validation-summary-valid {
     display: none;
-}
-
-/* 
------------------------------------------------------------*/
-.seat, .seatOccupied, .seatDealer
-{
-    border: solid 1px gray;
-    margin: 5px;
-    padding: 5px;
-    width: 100%;
-    height: 35px;
-}
-
-.seat
-{
-    font-size: 20px;
-    color: black;
-    background-color: silver;
-}
-.seatOccupied
-{
-    font-size: 26px;
-    color: white;
-    background-color: blue;
-}
-.seatDealer
-{
-    font-size: 26px;
-    color: white;
-    background-color: #036c0c;
-}
-
-.player
-{
-    border: solid 1px gray;
-    margin: 5px;
-    padding: 5px;
-    width: 95%;
-    height: 25px;
-    font-size: 18px;
-    color: black;
-    background-color: silver;
-}
-
-.tableCode
-{
-    margin: 5px;
-    padding: 10px;
-    font-size:30px;
-    width: 100%;
-    height: 100%;
-    background-color: #f6dd65;
-    text-align:right;
-}
-
-#TableCodeInfoModal .modal-body
-{
-    font-size: large;
-}
-
-#TableCodeInfoModal .modal-body span
-{
-    font-size: x-large;
-    color: blue;
-    background-color: #f0f0f0;
-}
-
-.hearts, .diamonds, .clubs, .spades {
-	font-size: 60px;
-    margin: 5px;
-	padding-top: 50px;
-	border: 1px solid black;
-	display: inline-block;
-	height: 150px;
-	width: 120px;
-    text-align: center;
-}
-
-.hearts, .diamonds {
-	color: red;
-}
-	
-.hearts:after {
-	content: "\2665";
-}
-
-.diamonds:after {
-	content: "\2666";
-}
-
-.clubs:after {
-	content: "\2663";
-}
-
-.spades:after {
-	content: "\2660";
 }
