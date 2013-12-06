@@ -92,6 +92,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PokerTable.Game\PokerTable.Game.csproj">
+      <Project>{d051d8ef-41ce-4947-b0a3-cd32342eb514}</Project>
+      <Name>PokerTable.Game</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PokerTable.Web\PokerTable.Web.csproj">
       <Project>{D9695A8F-CDA3-4B88-813B-CC2723ACC79D}</Project>
       <Name>PokerTable.Web</Name>
