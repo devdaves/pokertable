@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PokerTable.Game.Interfaces;
+using System.Globalization;
+using PokerTable.Game.Models.Interfaces;
 
 namespace PokerTable.Game.Models
 {
@@ -77,7 +74,7 @@ namespace PokerTable.Game.Models
                 case 1:
                     return "A";
                 default:
-                    return this.Value.ToString();
+                    return this.Value.ToString(CultureInfo.InvariantCulture);
             }
         }
 

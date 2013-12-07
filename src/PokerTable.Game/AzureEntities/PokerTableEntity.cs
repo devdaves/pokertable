@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace PokerTable.Game.AzureEntities
@@ -31,6 +27,6 @@ namespace PokerTable.Game.AzureEntities
 
         public string PublicCards { get; set; }
 
-        public DateTime LastUpdatedUTC { get; set; }
+        public DateTime LastUpdatedUtc { get; set; }
     }
 }
