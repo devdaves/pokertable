@@ -1,10 +1,9 @@
 ﻿using System;
-using PokerTable.Game.Models.Interfaces;
 
 namespace PokerTable.Game.Models
 {
     [Serializable]
-    public class Seat : ISeat
+    public class Seat
     {
         public int Id { get; set; }
 

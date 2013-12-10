@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using PokerTable.Game.Models.Interfaces;
 
 namespace PokerTable.Game.Models
 {
     [Serializable]
-    public class Card : ICard
+    public class Card
     {
         public enum Suites
         {

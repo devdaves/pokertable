@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using PokerTable.Game.Models.Interfaces;
 
 namespace PokerTable.Game.Models
 {
     [Serializable]
-    public class Deck : IDeck
+    public class Deck
     {
         public Deck()
         {

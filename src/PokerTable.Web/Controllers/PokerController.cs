@@ -3,12 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
+using PokerTable.Game;
 using PokerTable.Web.Models.JsonModels;
 
 namespace PokerTable.Web.Controllers
 {
     public class PokerController : Controller
     {
+        private IEngine engine;
+
+        public PokerController()
+        {
+            this.engine = new Engine();   
+        }
+
+        public PokerController(IEngine engine)
+        {
+            this.engine = engine;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -17,8 +31,25 @@ namespace PokerTable.Web.Controllers
         [HttpPost]
         public JsonResult CreateTable(string tableName)
         {
-            var result = new CreateTableJson();
-            return new JsonResult(){ Data = result};
+            if (string.IsNullOrEmpty(tableName))
+            {
+                return new JsonResult()
+                {
+                    Data = new CreateTableJson()
+                    {
+                        Status = 1,
+                        FailureMessage = "Table Name is required."
+                    }
+                };
+            }
+
+            var result = this.FillJson<CreateTableJson>(x =>
+            {
+                this.engine.CreateNewTable(10, tableName);
+                x.TableId = this.engine.Table.Id;
+            });
+
+            return new JsonResult() {Data = result};
         }
 
 

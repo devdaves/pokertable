@@ -7,6 +7,6 @@ namespace PokerTable.Web.Models.JsonModels
 {
     public class CreateTableJson : JsonBase
     {
-
+        public Guid TableId { get; set; }
     }
 }

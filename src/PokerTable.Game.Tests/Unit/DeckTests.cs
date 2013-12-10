@@ -5,7 +5,6 @@ using Moq;
 using PokerTable.Game.Data.Interfaces;
 using PokerTable.Game.Exceptions;
 using PokerTable.Game.Models;
-using PokerTable.Game.Models.Interfaces;
 
 namespace PokerTable.Game.Tests.Unit
 {
@@ -114,7 +113,7 @@ namespace PokerTable.Game.Tests.Unit
             Assert.AreEqual(0, duplicatesGroup.Count());
         }
 
-        private void TestDeckCardsValues(IDeck deck, Card.Suites suite)
+        private void TestDeckCardsValues(Deck deck, Card.Suites suite)
         {
             for (var v = 1; v < 14; v++)
             {

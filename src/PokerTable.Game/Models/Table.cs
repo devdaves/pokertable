@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PokerTable.Game.Models.Interfaces;
 
 namespace PokerTable.Game.Models
 {
-    public class Table : ITable
+    public class Table
     {
+        public Table()
+        {
+        }
+
         public Table(string tableName, string tablePassword)
         {
             this.Id = Guid.NewGuid();

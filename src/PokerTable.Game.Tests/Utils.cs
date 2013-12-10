@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using PokerTable.Game.Models.Interfaces;
+using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Tests
 {
     public static class Utils
     {
-        public static string DeckCardsToString(IDeck deck)
+        public static string DeckCardsToString(Deck deck)
         {
             var sb = new StringBuilder();
             foreach (var card in deck.Cards)
