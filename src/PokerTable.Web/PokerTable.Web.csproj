@@ -143,6 +143,7 @@
     </Compile>
     <Compile Include="Hubs\PokerHub.cs" />
     <Compile Include="Models\JsonModels\CreateTableJson.cs" />
+    <Compile Include="Models\JsonModels\JoinTableJson.cs" />
     <Compile Include="Models\JsonModels\JsonBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -426,11 +427,17 @@
     <Content Include="SPA\PokerTable\controllers.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="SPA\PokerTable\PartialViews\PlayerView.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SPA\PokerTable\PartialViews\Start.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SPA\PokerTable\PartialViews\TableView.html" />
     <Content Include="SPA\PokerTable\services.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SPA\PokerTable\signalr.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.config" />

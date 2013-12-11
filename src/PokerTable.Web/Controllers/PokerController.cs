@@ -52,6 +52,18 @@ namespace PokerTable.Web.Controllers
             return new JsonResult() {Data = result};
         }
 
+        [HttpPost]
+        public JsonResult JoinTable(string tableCode, string playerName)
+        {
+            var result = this.FillJson<JoinTableJson>(x =>
+            {
+                var playerId = this.engine.JoinTable(tableCode, playerName);
+                x.TableId = this.engine.Table.Id;
+                x.PlayerId = playerId;
+            });
+
+            return new JsonResult() { Data = result };
+        }
 
         private TJson FillJson<TJson>(Action<TJson> action)
             where TJson : JsonBase, new()
