@@ -1,4 +1,15 @@
-﻿Table ID: {{tableId}}<br/>
-Table Name: {{table.Name}}<br/>
-Table Password/Code: {{table.Password}}<br/>
-Player Count: {{playerCount()}}
+﻿<div id="tableContainer">
+    Table ID: {{tableId}}<br />
+    Table Name: {{table.Name}}<br />
+    Table Password/Code: {{table.Password}}<br />
+    <hr/>
+    
+    <table>
+        <tr>
+            <td>Player Count: {{playerCount()}}<br /></td>
+        </tr>
+        <tr data-ng-repeat="player in table.Players">
+            <td>{{player.Name}}</td>
+        </tr>
+    </table>    
+</div>

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using PokerTable.Game;
 using PokerTable.Game.Models;
+using PokerTable.Web.Models.JsonModels;
 
 namespace PokerTable.Web.Hubs
 {
@@ -29,6 +30,53 @@ namespace PokerTable.Web.Hubs
         {
             this.engine.LoadTable(tableId);
             return this.engine.Table;
+        }
+
+        public CreateTableJson CreateTable(string tableName)
+        {
+            return this.FillResponse<CreateTableJson>(r =>
+            {
+                if (string.IsNullOrEmpty(tableName))
+                {
+                    r.Status = 1;
+                    r.FailureMessage = "Table Name is required.";
+                }
+                else
+                {
+                    this.engine.CreateNewTable(10, tableName);
+                    r.TableId = this.engine.Table.Id;
+                }
+            });
+        }
+
+        public JoinTableJson JoinTable(string tableCode, string playerName)
+        {
+            return this.FillResponse<JoinTableJson>(r =>
+            {
+                var playerId = this.engine.JoinTable(tableCode, playerName);
+                r.TableId = this.engine.Table.Id;
+                r.PlayerId = playerId;
+
+                Clients.Group(this.engine.Table.Id.ToString()).playerJoined(playerName);
+            });
+        }
+
+        private TResponse FillResponse<TResponse>(Action<TResponse> action)
+            where TResponse : JsonBase, new()
+        {
+            var response = new TResponse();
+
+            try
+            {
+                action.Invoke(response);
+            }
+            catch (Exception ex)
+            {
+                response.Status = 1;
+                response.FailureMessage = ex.Message;
+            }
+
+            return response;
         }
     }
 }

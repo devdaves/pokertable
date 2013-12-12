@@ -1,5 +1,8 @@
 ﻿var pokerHubProxy = $.connection.pokerHub;
 
-pokerHubProxy.client.hello = function () {
-    alert("Hello method called from server");
+pokerHubProxy.client.playerJoined = function(playerName) {
+    console.log(playerName + " joined the table, refreshing the table.");
+    var scope = angular.element($("#tableContainer")).scope();
+    scope.refreshTable();
 };
+
