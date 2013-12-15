@@ -61,6 +61,33 @@ namespace PokerTable.Web.Hubs
             });
         }
 
+        public AddPlayerToSeatJson AddPlayerToSeat(Guid tableId, int seatId, Guid playerId)
+        {
+            return this.FillResponse<AddPlayerToSeatJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.AssignSeatToPlayer(seatId, playerId);
+            });
+        }
+
+        public RemovePlayerFromSeatJson RemovePlayerFromSeat(Guid tableId, int seatId)
+        {
+            return this.FillResponse<RemovePlayerFromSeatJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.RemovePlayerFromSeat(seatId);
+            });
+        }
+
+        public SetDealerJson SetDealer(Guid tableId, int seatId)
+        {
+            return this.FillResponse<SetDealerJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.SetDealer(seatId);
+            });
+        }
+
         private TResponse FillResponse<TResponse>(Action<TResponse> action)
             where TResponse : JsonBase, new()
         {

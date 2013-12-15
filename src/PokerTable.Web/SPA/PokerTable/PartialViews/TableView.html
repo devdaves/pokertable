@@ -3,13 +3,54 @@
     Table Name: {{table.Name}}<br />
     Table Password/Code: {{table.Password}}<br />
     <hr/>
-    
     <table>
         <tr>
-            <td>Player Count: {{playerCount()}}<br /></td>
+            <td style="vertical-align: top">
+                <table>
+                    <tr>
+                        <td>Player Count: {{playerCount()}}<br /></td>
+                    </tr>
+                    <tr data-ng-repeat="player in table.Players">
+                        <td>{{player.Name}} : {{player.Id}}</td>
+                    </tr>
+                </table>                
+            </td>
+            <td style="vertical-align: top">
+                <table>
+                    <tr>
+                        <td>Seat Count: {{seatCount()}}<br /></td>
+                    </tr>
+                    <tr data-ng-repeat="seat in table.Seats">
+                        <td>{{seatName(seat)}}</td>
+                    </tr>
+                </table>
+            </td>
+            <td style="vertical-align: top">
+                <table>
+                    <tr>
+                        <td>Seat Actions</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Seat ID: <input type="text" data-ng-model="apts_seatId"/></td>
+                        <td>Player ID: <input type="text" data-ng-model="apts_playerId"/></td>
+                        <td><button data-ng-click="apts()">Add Player to Seat</button></td>
+                    </tr>
+                    <tr>
+                        <td>Seat ID: <input type="text" data-ng-model="rpfs_seatId" /></td>
+                        <td><button data-ng-click="rpfs()">Clear Seat</button></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Seat ID: <input type="text" data-ng-model="sd_seatId" /></td>
+                        <td><button data-ng-click="sd()">Set Dealer</button></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </td>
         </tr>
-        <tr data-ng-repeat="player in table.Players">
-            <td>{{player.Name}}</td>
-        </tr>
-    </table>    
+    </table>
+
+    
 </div>

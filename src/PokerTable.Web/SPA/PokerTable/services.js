@@ -31,7 +31,8 @@
                         alert(data.FailureMessage);
                     } else {
                         console.log("Table Joined");
-                        deferred.resolve(data.tableId, data.PlayerId);
+                        var result = { tableId: data.TableId, playerId: data.PlayerId };
+                        deferred.resolve(result);
                     }
                 });
             } catch(e) {
@@ -53,6 +54,54 @@
             } catch(e) {
                 deferred.reject(e);
             } 
+
+            return deferred.promise;
+        },
+        addPlayerToSeat: function(tableId, seatId, playerId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Adding Player to Seat");
+                pokerHubProxy.server.addPlayerToSeat(tableId, seatId, playerId).done(function (data) {
+                    console.log("Player added to Seat");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch(e) {
+                deferred.reject(e);
+            } 
+
+            return deferred.promise;
+        },
+        removePlayerFromSeat: function (tableId, seatId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Removing Player from Seat");
+                pokerHubProxy.server.removePlayerFromSeat(tableId, seatId).done(function (data) {
+                    console.log("Player removed from Seat");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
+
+            return deferred.promise;
+        },
+        setDealer: function (tableId, seatId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Setting Dealer");
+                pokerHubProxy.server.setDealer(tableId, seatId).done(function (data) {
+                    console.log("Dealer Set");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
 
             return deferred.promise;
         }
