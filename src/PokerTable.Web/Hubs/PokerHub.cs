@@ -46,7 +46,7 @@ namespace PokerTable.Web.Hubs
                     this.engine.CreateNewTable(10, tableName);
                     r.TableId = this.engine.Table.Id;
                 }
-            });
+            }, refresh: false);
         }
 
         public JoinTableJson JoinTable(string tableCode, string playerName)
@@ -58,7 +58,7 @@ namespace PokerTable.Web.Hubs
                 r.PlayerId = playerId;
 
                 Clients.Group(this.engine.Table.Id.ToString()).playerJoined(playerName);
-            });
+            }, refresh: false);
         }
 
         public AddPlayerToSeatJson AddPlayerToSeat(Guid tableId, int seatId, Guid playerId)
@@ -88,7 +88,7 @@ namespace PokerTable.Web.Hubs
             });
         }
 
-        private TResponse FillResponse<TResponse>(Action<TResponse> action)
+        private TResponse FillResponse<TResponse>(Action<TResponse> action, bool refresh = true)
             where TResponse : JsonBase, new()
         {
             var response = new TResponse();
@@ -96,6 +96,11 @@ namespace PokerTable.Web.Hubs
             try
             {
                 action.Invoke(response);
+
+                if (refresh)
+                {
+                    Clients.Group(this.engine.Table.Id.ToString()).refresh();
+                }
             }
             catch (Exception ex)
             {

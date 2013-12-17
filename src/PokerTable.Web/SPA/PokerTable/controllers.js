@@ -29,7 +29,7 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
     $scope.groupConnection = false;
     $scope.table = null;
 
-    $scope.refreshTable = function () {
+    $scope.refresh = function () {
         PokerService.getTable($scope.tableId).then(function(t) {
             $scope.table = t;
         });
@@ -71,18 +71,21 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
     };
 
     $scope.getPlayer = function (playerId) {
-        for (var i = 0; i < $scope.table.Players.length; i++) {
-            if ($scope.table.Players[i].Id == playerId) {
-                return $scope.table.Players[i];
+        if ($scope.table != null && $scope.table.Players != null) {
+            for (var i = 0; i < $scope.table.Players.length; i++) {
+                if ($scope.table.Players[i].Id == playerId) {
+                    return $scope.table.Players[i];
+                }
             }
         }
+        return null;
     };
 
     $scope.addPlayerToSeat = function(seatId, playerId) {
         PokerService.addPlayerToSeat($scope.tableId, seatId, playerId).then(function (result) {
             console.log(result);
             if (result.Status == 0) {
-                $scope.refreshTable();
+                $scope.refresh();
             }
         });
     };
@@ -91,7 +94,7 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
         PokerService.removePlayerFromSeat($scope.tableId, seatId).then(function(result) {
             console.log(result);
             if (result.Status == 0) {
-                $scope.refreshTable();
+                $scope.refresh();
             }
         });
     };
@@ -100,7 +103,7 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
         PokerService.setDealer($scope.tableId, seatId).then(function (result) {
             console.log(result);
             if (result.Status == 0) {
-                $scope.refreshTable();
+                $scope.refresh();
             }
         });
     };
@@ -109,13 +112,13 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
         .done(function () {
             console.log('Now connected, connection ID=' + $.connection.hub.id);
             $scope.joinGroup();
-            $scope.refreshTable();
+            $scope.refresh();
         })
         .fail(function () {
             console.log('Could not Connect!');
         });
     
-    // not needed after redesign below here...
+    // not needed after UX redesign below here...
     $scope.apts_seatId = "";
     $scope.apts_playerId = "";
     $scope.apts = function() {
@@ -136,12 +139,60 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
 pokerApp.controller('PlayerCtrl', function ($scope, $routeParams, PokerService) {
     $scope.tableId = $routeParams.tableId;
     $scope.playerId = $routeParams.playerId;
+    $scope.table = null;
+    $scope.player = null;
+
+    $scope.refresh = function () {
+        PokerService.getTable($scope.tableId).then(function (t) {
+            $scope.table = t;
+            $scope.player = $scope.getPlayer($scope.playerId);
+        });
+    };
+
+    $scope.getSeatNumber = function() {
+        var seat = $scope.getSeat($scope.playerId);
+        if (seat != null) {
+            return "Seat " + seat.Id;
+        }
+        return "Not in Seat.";
+    };
+
+    $scope.isDealer = function() {
+        var seat = $scope.getSeat($scope.playerId);
+        if (seat != null &&  seat.IsDealer) {
+            return true;
+        }
+        return false;
+    };
+
+    $scope.getSeat = function (playerId) {
+        if ($scope.table != null && $scope.table.Seats != null) {
+            for (var i = 0; i < $scope.table.Seats.length; i++) {
+                if ($scope.table.Seats[i].PlayerId == playerId) {
+                    return $scope.table.Seats[i];
+                }
+            }
+        }
+        return null;
+    };
+
+    $scope.getPlayer = function (playerId) {
+        if ($scope.table != null && $scope.table.Players != null) {
+            for (var i = 0; i < $scope.table.Players.length; i++) {
+                if ($scope.table.Players[i].Id == playerId) {
+                    return $scope.table.Players[i];
+                }
+            }
+        }
+        return null;
+    };
 
     $scope.joinGroup = function () {
         console.log('Joining group: ' + $scope.tableId);
         pokerHubProxy.server.joinGroup($scope.tableId).done(function () {
             console.log('Joined group: ' + $scope.tableId);
             $scope.groupConnection = true;
+            $scope.refresh();
         });
     };
 
