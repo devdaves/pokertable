@@ -88,6 +88,51 @@ namespace PokerTable.Web.Hubs
             });
         }
 
+        public DealPlayersJson DealPlayers(Guid tableId)
+        {
+            return this.FillResponse<DealPlayersJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.DealPlayers();
+            });
+        }
+
+        public DealFlopJson DealFlop(Guid tableId)
+        {
+            return this.FillResponse<DealFlopJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.DealFlop();
+            });
+        }
+
+        public DealTurnJson DealTurn(Guid tableId)
+        {
+            return this.FillResponse<DealTurnJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.DealTurn();
+            });
+        }
+
+        public DealRiverJson DealRiver(Guid tableId)
+        {
+            return this.FillResponse<DealRiverJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.DealRiver();
+            });
+        }
+
+        public ResetTableJson ResetTable(Guid tableId)
+        {
+            return this.FillResponse<ResetTableJson>(r =>
+            {
+                this.engine.LoadTable(tableId);
+                this.engine.ResetTable();
+            });
+        }
+
         private TResponse FillResponse<TResponse>(Action<TResponse> action, bool refresh = true)
             where TResponse : JsonBase, new()
         {

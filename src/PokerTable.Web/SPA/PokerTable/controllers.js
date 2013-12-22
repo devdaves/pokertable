@@ -107,7 +107,47 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
             }
         });
     };
-    
+
+    $scope.dealPlayers = function () {
+        PokerService.dealPlayers($scope.tableId).then(function(result) {
+            if (result.Status == 0) {
+                $scope.refresh();
+            }
+        });
+    };
+
+    $scope.dealFlop = function() {
+        PokerService.dealFlop($scope.tableId).then(function(result) {
+            if (result.Status == 0) {
+                $scope.refresh();
+            }
+        });
+    };
+
+    $scope.dealTurn = function() {
+        PokerService.dealTurn($scope.tableId).then(function(result) {
+            if (result.Status == 0) {
+                $scope.refresh();
+            }
+        });
+    };
+
+    $scope.dealRiver = function() {
+        PokerService.dealRiver($scope.tableId).then(function(result) {
+            if (result.Status == 0) {
+                $scope.refresh();
+            }
+        });
+    };
+
+    $scope.resetTable = function() {
+        PokerService.resetTable($scope.tableId).then(function(result) {
+            if (result.Status == 0) {
+                $scope.refresh();
+            }
+        });
+    };
+
     $.connection.hub.start()
         .done(function () {
             console.log('Now connected, connection ID=' + $.connection.hub.id);
@@ -117,8 +157,10 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
         .fail(function () {
             console.log('Could not Connect!');
         });
-    
+
+    // =====================================================    
     // not needed after UX redesign below here...
+    // =====================================================
     $scope.apts_seatId = "";
     $scope.apts_playerId = "";
     $scope.apts = function() {

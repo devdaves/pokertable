@@ -144,9 +144,14 @@
     <Compile Include="Hubs\PokerHub.cs" />
     <Compile Include="Models\JsonModels\AddPlayerToSeatJson.cs" />
     <Compile Include="Models\JsonModels\CreateTableJson.cs" />
+    <Compile Include="Models\JsonModels\DealFlopJson.cs" />
+    <Compile Include="Models\JsonModels\DealPlayersJson.cs" />
+    <Compile Include="Models\JsonModels\DealRiverJson.cs" />
+    <Compile Include="Models\JsonModels\DealTurnJson.cs" />
     <Compile Include="Models\JsonModels\JoinTableJson.cs" />
     <Compile Include="Models\JsonModels\JsonBase.cs" />
     <Compile Include="Models\JsonModels\RemovePlayerFromSeatJson.cs" />
+    <Compile Include="Models\JsonModels\ResetTableJson.cs" />
     <Compile Include="Models\JsonModels\SetDealerJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

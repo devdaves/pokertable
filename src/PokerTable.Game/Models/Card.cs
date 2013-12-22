@@ -48,6 +48,13 @@ namespace PokerTable.Game.Models
             }
         }
 
+        public string ShortName {
+            get
+            {
+                return this.Name();
+            }
+        }
+
         public int Value { get; set; }
 
         public string Name()

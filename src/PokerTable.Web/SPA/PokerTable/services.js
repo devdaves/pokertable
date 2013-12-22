@@ -104,6 +104,86 @@
             }
 
             return deferred.promise;
+        },
+        dealPlayers: function(tableId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Dealing Players");
+                pokerHubProxy.server.dealPlayers(tableId).done(function (data) {
+                    console.log("Players Dealt");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
+
+            return deferred.promise;
+        },
+        dealFlop: function(tableId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Dealing Flop");
+                pokerHubProxy.server.dealFlop(tableId).done(function (data) {
+                    console.log("Flop Dealt");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
+
+            return deferred.promise;
+        },
+        dealTurn: function(tableId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Dealing Turn");
+                pokerHubProxy.server.dealTurn(tableId).done(function (data) {
+                    console.log("Turn Dealt");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
+
+            return deferred.promise;
+        },
+        dealRiver: function(tableId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Dealing River");
+                pokerHubProxy.server.dealRiver(tableId).done(function (data) {
+                    console.log("River Dealt");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
+
+            return deferred.promise;
+        },
+        resetTable: function(tableId) {
+            var deferred = $q.defer();
+
+            try {
+                console.log("Reseting the table");
+                pokerHubProxy.server.resetTable(tableId).done(function (data) {
+                    console.log("Table Reset");
+                    console.log(data);
+                    deferred.resolve(data);
+                });
+            } catch (e) {
+                deferred.reject(e);
+            }
+
+            return deferred.promise;
         }
     };
 });

@@ -1,4 +1,8 @@
 ﻿Player view<br/>
 Name: {{player.Name}}<br/>
 Seat: {{getSeatNumber()}}<br/>
-Dealer: {{isDealer()}}
+Dealer: {{isDealer()}} <br/>
+Hold Cards: 
+<span data-ng-repeat="card in player.Cards">
+    {{card.ShortName}}
+</span>
