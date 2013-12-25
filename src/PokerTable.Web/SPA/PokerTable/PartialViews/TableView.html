@@ -1,7 +1,40 @@
 ﻿<div id="tableContainer">
-    Table ID: {{tableId}}<br />
-    Table Name: {{table.Name}}<br />
-    Table Password/Code: {{table.Password}}<br />
+    <div class="row">
+        <div class="col-sm-8">
+            <h2>{{table.Name}} <small>poker table</small></h2>
+        </div>
+        <div class="col-sm-4 text-right">
+            <h3>Code: {{table.Password}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2" data-ng-class="$first ? 'col-sm-offset-1' : ''" data-ng-repeat="seat in seatsTop()">
+            <div class="table-seat" data-ng-class="seat.IsDealer ? 'table-seat-dealer' : ''">
+                <div>Seat {{seat.Id}}</div>
+                {{seatName(seat)}}
+            </div>
+        </div>
+    </div>
+    <div class="row table-playarea">
+        <div class="col-sm-12 text-center">
+            <br/><br /><br />
+            <span data-ng-repeat="card in table.PublicCards">
+                <span class="table-{{card.HtmlCssClass}}">
+                    {{card.StringValue}}
+                </span>
+            </span>
+            <br /><br /><br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2" data-ng-class="$first ? 'col-sm-offset-1' : ''" data-ng-repeat="seat in seatsBottom()">
+            <div class="table-seat" data-ng-class="seat.IsDealer ? 'table-seat-dealer' : ''">
+                <div>Seat {{seat.Id}}</div>
+                {{seatName(seat)}}
+            </div>
+        </div>
+    </div>
+    <hr/>
     <button data-ng-disabled="!table.DealPlayersAvailable" data-ng-click="dealPlayers()">Deal Players</button> 
     <button data-ng-disabled="!table.DealFlopAvailable" data-ng-click="dealFlop()">Deal Flop</button> 
     <button data-ng-disabled="!table.DealTurnAvailable" data-ng-click="dealTurn()">Deal Turn</button> 

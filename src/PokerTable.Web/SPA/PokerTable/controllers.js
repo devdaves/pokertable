@@ -57,15 +57,31 @@ pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
         return $scope.table.Seats.length;
     };
 
+    $scope.seatsTop = function() {
+        if ($scope.table != null && $scope.table.Seats != null && $scope.table.Seats.length > 0) {
+            return $scope.table.Seats.slice(0, 5);
+        }
+
+        return [];
+    };
+    
+    $scope.seatsBottom = function() {
+        if ($scope.table != null && $scope.table.Seats != null && $scope.table.Seats.length > 0) {
+            return $scope.table.Seats.slice(5, 10);
+        }
+
+        return [];
+    };
+
     $scope.seatName = function(seat) {
         if (seat.PlayerId == null) {
-            return seat.Id + ": Open";
+            return "Open";
         } else {
             var p = $scope.getPlayer(seat.PlayerId);
             if (seat.IsDealer) {
-                return seat.Id + ": " + p.Name + "(Dealer)";
+                return p.Name + "(Dealer)";
             } else {
-                return seat.Id + ": " + p.Name;
+                return p.Name;
             }
         }
     };

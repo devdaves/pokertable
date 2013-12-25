@@ -1,0 +1,50 @@
+﻿body {
+}
+
+.table-hearts, .table-diamonds, .table-clubs, .table-spades {
+    font-size: 55px;
+    padding: 5px;
+    border: 3px solid gray;
+    display: inline-block;
+    height: 180px;
+    width: 140px;
+    background-color: white;
+}
+
+.table-hearts, .table-diamonds {
+    color: red;
+}
+
+.table-clubs, .table-spades {
+    color: black;
+}
+
+.table-hearts:after {
+    content: "\2665";
+}
+.table-diamonds:after {
+	content: "\2666";
+}
+.table-clubs:after {
+	content: "\2663";
+}
+.table-spades:after {
+	content: "\2660";
+}	
+
+.table-seat {
+    text-align: center;
+    height: 60px;
+    border: 1px solid black;
+}
+
+.table-seat div {
+    color: white;
+    background-color: black;
+    font-size: xx-small;
+    margin-bottom: 5px;
+}
+
+.table-seat-dealer {
+    background-color: yellow;
+}
