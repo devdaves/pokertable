@@ -1,12 +1,35 @@
-﻿Start a new table?<br/>
-Table Name: <input type="text" data-ng-model="newTableName" />
-<button type="button" data-ng-click="createTable()">Create Table</button>
+﻿<div class="row">
+    <div class="col-sm-12">
+        <h3>Enter an existing table?</h3>
+        <form role="form">
+            <div class="form-group">
+                <label for="tablecode">Table Code</label>
+                <input type="text" id="tablecode" placeholder="enter table code" class="form-control" data-ng-model="tableCode" />
+            </div>
+            <div class="form-group">
+                <label for="playername">Player Name</label>
+                <input type="text" id="playername" placeholder="enter player name" class="form-control" data-ng-model="playerName" />
+            </div>
+            <button type="button" data-ng-click="joinTable()" class="btn btn-default">Join Table</button>
+        </form>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Start a new table?</h3>
+        <form role="form">
+            <div class="form-group">
+                <label for="tablename">Table Name</label>
+                <input type="text" id="tablename" placeholder="enter table name" class="form-control" data-ng-model="newTableName" />
+            </div>
+            <button type="button" data-ng-click="createTable()" class="btn btn-default">Create Table</button>
+        </form>
+    </div>
+</div>
 
-<hr/>
 
-Enter an Existing table?<br/>
-Table Code:<input type="text" data-ng-model="tableCode" /><br/>
-Player Name:<input type="text" data-ng-model="playerName" /><br/>
-<button type="button" data-ng-click="joinTable()">Join Table</button>
+
+
 
 

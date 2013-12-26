@@ -1,34 +1,44 @@
 ﻿body {
 }
 
-.table-hearts, .table-diamonds, .table-clubs, .table-spades {
+.table-hearts, .table-diamonds, .table-clubs, .table-spades, .tableAction {
     font-size: 55px;
     padding: 5px;
     border: 3px solid gray;
-    display: inline-block;
+    display: inline-table;
     height: 180px;
     width: 140px;
     background-color: white;
 }
 
-.table-hearts, .table-diamonds {
+.player-hearts, .player-diamonds, .player-clubs, .player-spades{
+    font-size: 18px;
+    padding: 5px;
+    border: 1px solid gray;
+    display: inline-table;
+    height: 60px;
+    width: 50px;
+    background-color: white;
+}
+
+.table-hearts, .table-diamonds, .player-hearts, .player-diamonds {
     color: red;
 }
 
-.table-clubs, .table-spades {
+.table-clubs, .table-spades, .player-clubs, .player-spades {
     color: black;
 }
 
-.table-hearts:after {
+.table-hearts:after, .player-hearts:after {
     content: "\2665";
 }
-.table-diamonds:after {
+.table-diamonds:after, .player-diamonds:after {
 	content: "\2666";
 }
-.table-clubs:after {
+.table-clubs:after, .player-clubs:after {
 	content: "\2663";
 }
-.table-spades:after {
+.table-spades:after, .player-spades:after {
 	content: "\2660";
 }	
 
@@ -47,4 +57,13 @@
 
 .table-seat-dealer {
     background-color: yellow;
+}
+
+.tableAction {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.tableAction span {
+    font-size: 30px;
 }

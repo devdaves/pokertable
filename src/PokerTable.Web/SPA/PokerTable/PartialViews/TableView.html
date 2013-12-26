@@ -17,12 +17,17 @@
     </div>
     <div class="row table-playarea">
         <div class="col-sm-12 text-center">
-            <br/><br /><br />
+            <br/><br />
             <span data-ng-repeat="card in table.PublicCards">
                 <span class="table-{{card.HtmlCssClass}}">
                     {{card.StringValue}}
                 </span>
             </span>
+            <span class="tableAction" data-ng-show="table.DealPlayersAvailable" data-ng-click="dealPlayers()"><span>Deal Players</span></span>
+            <span class="tableAction" data-ng-show="table.DealFlopAvailable" data-ng-click="dealFlop()"><span>Deal Flop</span></span>
+            <span class="tableAction" data-ng-show="table.DealTurnAvailable" data-ng-click="dealTurn()"><span>Deal Turn</span></span>
+            <span class="tableAction" data-ng-show="table.DealRiverAvailable" data-ng-click="dealRiver()"><span>Deal River</span></span>
+            <span class="tableAction" data-ng-click="resetTable()"><span>Reset Table</span></span>
             <br /><br /><br />
         </div>
     </div>
@@ -35,10 +40,10 @@
         </div>
     </div>
     <hr/>
-    <button data-ng-disabled="!table.DealPlayersAvailable" data-ng-click="dealPlayers()">Deal Players</button> 
-    <button data-ng-disabled="!table.DealFlopAvailable" data-ng-click="dealFlop()">Deal Flop</button> 
-    <button data-ng-disabled="!table.DealTurnAvailable" data-ng-click="dealTurn()">Deal Turn</button> 
-    <button data-ng-disabled="!table.DealRiverAvailable" data-ng-click="dealRiver()">Deal River</button> 
+    <button data-ng-show="table.DealPlayersAvailable" data-ng-click="dealPlayers()">Deal Players</button> 
+    <button data-ng-show="table.DealFlopAvailable" data-ng-click="dealFlop()">Deal Flop</button> 
+    <button data-ng-show="table.DealTurnAvailable" data-ng-click="dealTurn()">Deal Turn</button> 
+    <button data-ng-show="table.DealRiverAvailable" data-ng-click="dealRiver()">Deal River</button> 
     <button data-ng-click="resetTable()">Reset Table</button>
     <hr/>
     <span data-ng-repeat="card in table.PublicCards">

@@ -1,8 +1,36 @@
-﻿Player view<br/>
-Name: {{player.Name}}<br/>
-Seat: {{getSeatNumber()}}<br/>
-Dealer: {{isDealer()}} <br/>
-Hold Cards: 
-<span data-ng-repeat="card in player.Cards">
-    {{card.ShortName}}
-</span>
+﻿<div class="row">
+    <div class="col-xs-12">
+        Name: {{player.Name}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Seat: {{getSeatNumber()}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Dealer: {{isDealer()}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        Hold Cards:<br/>
+        <span data-ng-repeat="card in player.Cards">
+            <span class="player-{{card.HtmlCssClass}}">
+                {{card.StringValue}}
+            </span>
+        </span>        
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-xs-12">
+        Public Cards:<br/>
+        <span data-ng-repeat="card in table.PublicCards">
+            <span class="player-{{card.HtmlCssClass}}">
+                {{card.StringValue}}
+            </span>
+        </span>
+    </div>
+</div>
