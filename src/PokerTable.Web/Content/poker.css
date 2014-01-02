@@ -46,6 +46,7 @@
     text-align: center;
     height: 60px;
     border: 1px solid black;
+    cursor: pointer
 }
 
 .table-seat div {

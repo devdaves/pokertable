@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="col-sm-2" data-ng-class="$first ? 'col-sm-offset-1' : ''" data-ng-repeat="seat in seatsTop()">
-            <div class="table-seat" data-ng-class="seat.IsDealer ? 'table-seat-dealer' : ''">
+            <div class="table-seat" data-ng-class="seat.IsDealer ? 'table-seat-dealer' : ''" data-ng-click="showSeatOptions(seat.Id)">
                 <div>Seat {{seat.Id}}</div>
                 {{seatName(seat)}}
             </div>
@@ -17,87 +17,65 @@
     </div>
     <div class="row table-playarea">
         <div class="col-sm-12 text-center">
-            <br/><br />
+            <br /><br />
             <span data-ng-repeat="card in table.PublicCards">
                 <span class="table-{{card.HtmlCssClass}}">
                     {{card.StringValue}}
                 </span>
             </span>
-            <span class="tableAction" data-ng-show="table.DealPlayersAvailable" data-ng-click="dealPlayers()"><span>Deal Players</span></span>
-            <span class="tableAction" data-ng-show="table.DealFlopAvailable" data-ng-click="dealFlop()"><span>Deal Flop</span></span>
-            <span class="tableAction" data-ng-show="table.DealTurnAvailable" data-ng-click="dealTurn()"><span>Deal Turn</span></span>
-            <span class="tableAction" data-ng-show="table.DealRiverAvailable" data-ng-click="dealRiver()"><span>Deal River</span></span>
-            <span class="tableAction" data-ng-click="resetTable()"><span>Reset Table</span></span>
+            <span>
+                <span class="tableAction" data-ng-show="table.DealPlayersAvailable" data-ng-click="dealPlayers()"><span>Deal Players</span></span>
+            </span>
+            <span>
+                <span class="tableAction" data-ng-show="table.DealFlopAvailable" data-ng-click="dealFlop()"><span>Deal Flop</span></span>    
+            </span>
+            <span>
+                <span class="tableAction" data-ng-show="table.DealTurnAvailable" data-ng-click="dealTurn()"><span>Deal Turn</span></span>    
+            </span>
+            <span>
+                <span class="tableAction" data-ng-show="table.DealRiverAvailable" data-ng-click="dealRiver()"><span>Deal River</span></span>    
+            </span>
+            <span>
+                <span class="tableAction" data-ng-click="resetTable()"><span>Reset Table</span></span>    
+            </span>
             <br /><br /><br />
         </div>
     </div>
     <div class="row">
         <div class="col-sm-2" data-ng-class="$first ? 'col-sm-offset-1' : ''" data-ng-repeat="seat in seatsBottom()">
-            <div class="table-seat" data-ng-class="seat.IsDealer ? 'table-seat-dealer' : ''">
+            <div class="table-seat" data-ng-class="seat.IsDealer ? 'table-seat-dealer' : ''" data-ng-click="showSeatOptions(seat.Id)">
                 <div>Seat {{seat.Id}}</div>
                 {{seatName(seat)}}
             </div>
         </div>
     </div>
-    <hr/>
-    <button data-ng-show="table.DealPlayersAvailable" data-ng-click="dealPlayers()">Deal Players</button> 
-    <button data-ng-show="table.DealFlopAvailable" data-ng-click="dealFlop()">Deal Flop</button> 
-    <button data-ng-show="table.DealTurnAvailable" data-ng-click="dealTurn()">Deal Turn</button> 
-    <button data-ng-show="table.DealRiverAvailable" data-ng-click="dealRiver()">Deal River</button> 
-    <button data-ng-click="resetTable()">Reset Table</button>
-    <hr/>
-    <span data-ng-repeat="card in table.PublicCards">
-        {{card.ShortName}}         
-    </span>
-    <hr/>
-    <table>
-        <tr>
-            <td style="vertical-align: top">
-                <table>
-                    <tr>
-                        <td>Player Count: {{playerCount()}}<br /></td>
-                    </tr>
-                    <tr data-ng-repeat="player in table.Players">
-                        <td>{{player.Name}} : {{player.Id}}</td>
-                    </tr>
-                </table>                
-            </td>
-            <td style="vertical-align: top">
-                <table>
-                    <tr>
-                        <td>Seat Count: {{seatCount()}}<br /></td>
-                    </tr>
-                    <tr data-ng-repeat="seat in table.Seats">
-                        <td>{{seatName(seat)}}</td>
-                    </tr>
-                </table>
-            </td>
-            <td style="vertical-align: top">
-                <table>
-                    <tr>
-                        <td>Seat Actions</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Seat ID: <input type="text" data-ng-model="apts_seatId"/></td>
-                        <td>Player ID: <input type="text" data-ng-model="apts_playerId"/></td>
-                        <td><button data-ng-click="apts()">Add Player to Seat</button></td>
-                    </tr>
-                    <tr>
-                        <td>Seat ID: <input type="text" data-ng-model="rpfs_seatId" /></td>
-                        <td><button data-ng-click="rpfs()">Clear Seat</button></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Seat ID: <input type="text" data-ng-model="sd_seatId" /></td>
-                        <td><button data-ng-click="sd()">Set Dealer</button></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-
-    
+</div>
+<div class="modal fade" id="seatModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="seatModalLabel">Seat {{currentSeat}} Options</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn btn-block" data-dismiss="modal" data-ng-repeat="player in table.Players" data-ng-if="$even" data-ng-click="addPlayerToSeat(currentSeat, player.Id)">{{player.Name}}</button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button class="btn btn-block" data-dismiss="modal" data-ng-repeat="player in table.Players" data-ng-if="$odd" data-ng-click="addPlayerToSeat(currentSeat, player.Id)">{{player.Name}}</button>
+                    </div>
+                </div>
+                <h4>Other Actions</h4>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn btn-block" data-dismiss="modal" data-ng-click="setDealer(currentSeat)">Seat as Dealer</button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button class="btn btn-block" data-dismiss="modal" data-ng-click="removePlayerFromSeat(currentSeat)">Clear Seat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

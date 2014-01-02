@@ -130,6 +130,7 @@ namespace PokerTable.Web.Hubs
             {
                 this.engine.LoadTable(tableId);
                 this.engine.ResetTable();
+                this.engine.NextDealer();
             });
         }
 
