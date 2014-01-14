@@ -1,11 +1,13 @@
-﻿pokerApp.factory('PokerService', function ($q) {
+﻿pokerApp.factory('PokerService', function ($q, cfpLoadingBar) {
     return {
         createTable: function (tableName) {
             var deferred = $q.defer();
 
             try {
+                cfpLoadingBar.start();
                 pokerHubProxy.server.createTable(tableName).done(function (data) {
                     console.log(data);
+                    cfpLoadingBar.complete();
                     if (data.Status == 1) {
                         alert(data.FailureMessage);
                     } else {
@@ -24,9 +26,10 @@
             var deferred = $q.defer();
 
             try {
+                cfpLoadingBar.start();
                 pokerHubProxy.server.joinTable(tableCode, playerName).then(function (data) {
                     console.log(data);
-
+                    cfpLoadingBar.complete();
                     if (data.Status == 1) {
                         alert(data.FailureMessage);
                     } else {
@@ -46,9 +49,11 @@
 
             try {
                 console.log("Getting Table");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.getTable(tableId).done(function (t) {
                     console.log("Table Loaded");
                     console.log(t);
+                    cfpLoadingBar.complete();
                     deferred.resolve(t);
                 });
             } catch(e) {
@@ -62,9 +67,11 @@
 
             try {
                 console.log("Adding Player to Seat");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.addPlayerToSeat(tableId, seatId, playerId).done(function (data) {
                     console.log("Player added to Seat");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch(e) {
@@ -78,9 +85,11 @@
 
             try {
                 console.log("Removing Player from Seat");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.removePlayerFromSeat(tableId, seatId).done(function (data) {
                     console.log("Player removed from Seat");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {
@@ -94,9 +103,11 @@
 
             try {
                 console.log("Setting Dealer");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.setDealer(tableId, seatId).done(function (data) {
                     console.log("Dealer Set");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {
@@ -110,9 +121,11 @@
 
             try {
                 console.log("Dealing Players");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.dealPlayers(tableId).done(function (data) {
                     console.log("Players Dealt");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {
@@ -126,9 +139,11 @@
 
             try {
                 console.log("Dealing Flop");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.dealFlop(tableId).done(function (data) {
                     console.log("Flop Dealt");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {
@@ -142,9 +157,11 @@
 
             try {
                 console.log("Dealing Turn");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.dealTurn(tableId).done(function (data) {
                     console.log("Turn Dealt");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {
@@ -158,9 +175,11 @@
 
             try {
                 console.log("Dealing River");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.dealRiver(tableId).done(function (data) {
                     console.log("River Dealt");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {
@@ -174,9 +193,11 @@
 
             try {
                 console.log("Reseting the table");
+                cfpLoadingBar.start();
                 pokerHubProxy.server.resetTable(tableId).done(function (data) {
                     console.log("Table Reset");
                     console.log(data);
+                    cfpLoadingBar.complete();
                     deferred.resolve(data);
                 });
             } catch (e) {

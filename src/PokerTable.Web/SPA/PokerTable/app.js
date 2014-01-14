@@ -1,4 +1,4 @@
-﻿var pokerApp = angular.module('pokerApp', ['ngRoute', 'ngTouch']);
+﻿var pokerApp = angular.module('pokerApp', ['ngRoute', 'ngTouch', 'chieffancypants.loadingBar']);
 
 pokerApp.config(function ($routeProvider) {
     $routeProvider

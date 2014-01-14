@@ -160,6 +160,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\loading-bar.css" />
     <Content Include="Content\poker.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -438,6 +439,7 @@
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery.signalR-2.0.0.js" />
     <Content Include="Scripts\jquery.signalR-2.0.0.min.js" />
+    <Content Include="Scripts\loading-bar.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SPA\PokerTable\app.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
