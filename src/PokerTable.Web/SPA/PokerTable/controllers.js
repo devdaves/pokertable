@@ -24,11 +24,15 @@
     };
 });
 
-pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService) {
+pokerApp.controller('TableCtrl', function($scope, $routeParams, PokerService, toaster) {
     $scope.tableId = $routeParams.tableId;
     $scope.groupConnection = false;
     $scope.table = null;
     $scope.currentSeat = 0;
+
+    $scope.playerAdded = function(playerName) {
+        toaster.pop('success', null, playerName + " joined");
+    };
 
     $scope.refresh = function () {
         PokerService.getTable($scope.tableId).then(function(t) {

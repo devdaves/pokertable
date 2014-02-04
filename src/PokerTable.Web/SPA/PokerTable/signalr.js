@@ -3,6 +3,7 @@
 pokerHubProxy.client.playerJoined = function(playerName) {
     console.log(playerName + " joined the table, refreshing the table.");
     var scope = angular.element($("#pokerViewContainer")).scope();
+    scope.playerAdded(playerName);
     scope.refresh();
 };
 
