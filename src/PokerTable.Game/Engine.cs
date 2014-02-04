@@ -56,10 +56,18 @@ namespace PokerTable.Game
                 throw new TableDoesNotExistException();
             }
 
-            var player = new Player(playerName);
-            this.AddPlayer(player);
+            Player player = null;
 
-            return player.Id;
+            if (this.Table.Players.Any(x => x.Name == playerName))
+            {
+                return this.Table.Players.Single(x => x.Name == playerName).Id;
+            }
+            else
+            {
+                player = new Player(playerName);
+                this.AddPlayer(player);
+                return player.Id;
+            }
         }
 
         public bool AssignSeatToPlayer(int seatId, Guid playerId)

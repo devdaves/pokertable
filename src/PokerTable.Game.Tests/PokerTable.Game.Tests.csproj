@@ -65,6 +65,7 @@
     <Compile Include="Integration\Data\AzureRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Unit\DeckTests.cs" />
+    <Compile Include="Unit\EngineTests.cs" />
     <Compile Include="Unit\Extensions\ExtensionTests.cs" />
     <Compile Include="Unit\Models\CardTests.cs" />
     <Compile Include="Unit\PlayerTests.cs" />
