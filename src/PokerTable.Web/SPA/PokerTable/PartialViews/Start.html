@@ -1,16 +1,38 @@
 ﻿<div class="row">
     <div class="col-sm-12">
         <h3>Enter an existing table?</h3>
-        <form role="form">
-            <div class="form-group">
-                <label for="tablecode">Table Code</label>
-                <input type="text" id="tablecode" placeholder="enter table code" class="form-control" data-ng-model="tableCode" />
+        <form name="joinExistingTable" novalidate ng-submit="joinTable()" role="form">
+            <div class="form-group has-feedback" ng-class="{'has-error': joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$invalid, 'has-success': joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$valid}">
+                <label for="tablecode" class="control-label">Table Code</label>
+                <input type="text" id="tablecode" name="tablecode" placeholder="enter table code" class="form-control" data-ng-model="tableCode" data-ng-minlength="5" data-ng-maxlength="10" required />
+                <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$valid"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$invalid"></span>
+                <span class="help-block" ng-show="joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$invalid && joinExistingTable.tablecode.$error.required">
+                    Table Code is required
+                </span>
+                <span class="help-block" ng-show="joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$invalid && joinExistingTable.tablecode.$error.minlength">
+                    Table Code is required to be at least 5 characters
+                </span>
+                <span class="help-block" ng-show="joinExistingTable.tablecode.$dirty && joinExistingTable.tablecode.$invalid && joinExistingTable.tablecode.$error.maxlength">
+                    Table Code cannot be longer than 10 characters
+                </span>
             </div>
-            <div class="form-group">
-                <label for="playername">Player Name</label>
-                <input type="text" id="playername" placeholder="enter player name" class="form-control" data-ng-model="playerName" />
+            <div class="form-group has-feedback" ng-class="{'has-error': joinExistingTable.playername.$dirty && joinExistingTable.playername.$invalid, 'has-success': joinExistingTable.playername.$dirty && joinExistingTable.playername.$valid}">
+                <label for="playername" class="control-label">Player Name</label>
+                <input type="text" id="playername" name="playername" placeholder="enter player name" class="form-control" data-ng-model="playerName" data-ng-minlength="3" data-ng-maxlength="15" required />
+                <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="joinExistingTable.playername.$dirty && joinExistingTable.playername.$valid"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="joinExistingTable.playername.$dirty && joinExistingTable.playername.$invalid"></span>
+                <span class="help-block" ng-show="joinExistingTable.playername.$dirty && joinExistingTable.playername.$invalid && joinExistingTable.playername.$error.required">
+                    Player Name is required
+                </span>
+                <span class="help-block" ng-show="joinExistingTable.playername.$dirty && joinExistingTable.playername.$invalid && joinExistingTable.playername.$error.minlength">
+                    Player Name is required to be at least 3 characters
+                </span>
+                <span class="help-block" ng-show="joinExistingTable.playername.$dirty && joinExistingTable.playername.$invalid && joinExistingTable.playername.$error.maxlength">
+                    Player Name cannot be longer than 15 characters
+                </span>
             </div>
-            <button type="button" data-ng-click="joinTable()" class="btn btn-default">Join Table</button>
+            <button type="submit" class="btn btn-default" ng-disabled="joinExistingTable.$invalid">Join Table</button>
         </form>
     </div>
 </div>
@@ -18,18 +40,23 @@
 <div class="row">
     <div class="col-sm-12">
         <h3>Start a new table?</h3>
-        <form role="form">
-            <div class="form-group">
-                <label for="tablename">Table Name</label>
-                <input type="text" id="tablename" placeholder="enter table name" class="form-control" data-ng-model="newTableName" />
+        <form name="startNewTable" novalidate ng-submit="createTable()" role="form">
+            <div class="form-group has-feedback" ng-class="{'has-error': startNewTable.tablename.$dirty && startNewTable.tablename.$invalid, 'has-success': startNewTable.tablename.$dirty && startNewTable.tablename.$valid}">
+                <label for="tablename" class="control-label">Table Name</label>
+                <input type="text" id="tablename" name="tablename" placeholder="enter table name" class="form-control" data-ng-model="newTableName" data-ng-minlength="3" data-ng-maxlength="20" required />
+                <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="startNewTable.tablename.$dirty && startNewTable.tablename.$valid"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="startNewTable.tablename.$dirty && startNewTable.tablename.$invalid"></span>
+                <span class="help-block" ng-show="startNewTable.tablename.$dirty && startNewTable.tablename.$invalid && startNewTable.tablename.$error.required">
+                    Table Name is required
+                </span>
+                <span class="help-block" ng-show="startNewTable.tablename.$dirty && startNewTable.tablename.$invalid && startNewTable.tablename.$error.minlength">
+                    Table Name is required to be at least 3 characters
+                </span>
+                <span class="help-block" ng-show="startNewTable.tablename.$dirty && startNewTable.tablename.$invalid && startNewTable.tablename.$error.maxlength">
+                    Table Name cannot be longer than 20 characters
+                </span>
             </div>
-            <button type="button" data-ng-click="createTable()" class="btn btn-default">Create Table</button>
+            <button type="submit" class="btn btn-default" ng-disabled="startNewTable.$invalid">Create Table</button>
         </form>
     </div>
 </div>
-
-
-
-
-
-

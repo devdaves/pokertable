@@ -12,15 +12,19 @@
         });
 
     $scope.createTable = function () {
-        PokerService.createTable($scope.newTableName).then(function(t) {
-            $location.path('/tableview/' + t);
-        });
+        if ($scope["startNewTable"].$valid) {
+            PokerService.createTable($scope.newTableName).then(function (t) {
+                $location.path('/tableview/' + t);
+            });
+        }
     };
 
     $scope.joinTable = function () {
-        PokerService.joinTable($scope.tableCode, $scope.playerName).then(function(result) {
-            $location.path('/playerview/' + result.tableId + '/' + result.playerId);
-        });
+        if ($scope["joinExistingTable"].$valid) {
+            PokerService.joinTable($scope.tableCode, $scope.playerName).then(function (result) {
+                $location.path('/playerview/' + result.tableId + '/' + result.playerId);
+            });
+        }
     };
 });
 
