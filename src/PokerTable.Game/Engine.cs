@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using PokerTable.Game.Data;
 using PokerTable.Game.Data.Interfaces;
 using PokerTable.Game.Exceptions;
@@ -8,20 +9,68 @@ using PokerTable.Game.Models;
 
 namespace PokerTable.Game
 {
+    public interface IEngine
+    {
+        Table Table { get; set; }
+
+        void CreateNewTable(int numberOfSeats, string name);
+
+        void LoadTable(Guid tableId);
+
+        Guid JoinTable(string tablePassword, string playerName);
+
+        bool AssignSeatToPlayer(int seatId, Guid playerId);
+
+        bool RemovePlayerFromSeat(int seatId);
+
+        bool RemovePlayerFromSeat(Guid playerId);
+
+        bool DealerExists();
+
+        void SetDealer(int seatId);
+
+        void NextDealer();
+
+        void ShuffleDeck();
+
+        void DealPlayers();
+
+        void DealFlop();
+
+        void DealTurn();
+
+        void DealRiver();
+
+        void FoldPlayer(Guid playerId);
+
+        void ResetTable();
+
+        bool AddSeat(bool saveNow = true);
+
+        bool RemoveSeat(int seatId);
+
+        bool AddPlayer(Player player);
+
+        bool RemovePlayer(Guid playerId);
+    }
+
     public class Engine : IEngine
     {
         private const int RandomCodeLength = 5;
 
         private readonly IRepository repository;
+        private readonly IDeckBuilder deckBuilder;
+        private readonly IDealer dealer;
 
-        public Engine()
+        public Engine() : this(new AzureRepository(), new DeckBuilder(), new Dealer())
         {
-            this.repository = new AzureRepository();
         }
 
-        public Engine(IRepository repository)
+        public Engine(IRepository repository, IDeckBuilder deckBuilder, IDealer dealer)
         {
+            this.deckBuilder = deckBuilder;
             this.repository = repository;
+            this.dealer = dealer;
         }
 
         public Table Table { get; set; }
@@ -158,7 +207,7 @@ namespace PokerTable.Game
 
         public void ShuffleDeck()
         {
-            this.Table.Deck.Cards = this.Table.Deck.Cards.OrderBy(x => Guid.NewGuid()).ToList();
+            this.dealer.Shuffle(this.Table.Deck);
             this.repository.SaveTable(this.Table);
         }
 
@@ -167,7 +216,7 @@ namespace PokerTable.Game
             if (this.DealerExists())
             {
                 this.CalculateDealOrder();
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 2; i++) //two cards each player
                 {
                     foreach (var seat in this.Table.Seats.Where(x => x.PlayerId != null).OrderBy(x => x.DealOrder))
                     {
@@ -315,29 +364,14 @@ namespace PokerTable.Game
             return playerRemoved;
         }
 
-        internal Card DealCard()
+        private Card DealCard()
         {
-            var c = this.Table.Deck.Cards.FirstOrDefault(x => x.State == Card.States.Available);
-            if (c == null)
-            {
-                throw new NoAvailableCardsException();
-            }
-
-            c.State = Card.States.Dealt;
-            return c;
+            return this.dealer.Deal(this.Table.Deck);
         }
 
-        internal void BuildDeck()
+        private void BuildDeck()
         {
-            this.Table.Deck.Cards = new List<Card>();
-
-            for (var s = 1; s < 5; s++)
-            {
-                for (var v = 1; v < 14; v++)
-                {
-                    this.Table.Deck.Cards.Add(new Card { Suite = (Card.Suites)s, Color = (Card.Colors)(s % 2), State = Card.States.Available, Value = v });
-                }
-            }
+            this.Table.Deck = this.deckBuilder.Build();
         }
 
         internal void ResetPlayer(Guid playerId, bool saveNow = true)
@@ -399,20 +433,7 @@ namespace PokerTable.Game
 
         private void CalculateDealOrder()
         {
-            int dealOrder = 200;
-            foreach (var seat in this.Table.Seats)
-            {
-                if (seat.IsDealer)
-                {
-                    dealOrder = 100;
-                    seat.DealOrder = 300;
-                }
-                else
-                {
-                    seat.DealOrder = dealOrder;
-                    dealOrder++;
-                }
-            }
+            this.Table.Seats = this.dealer.CalculateDealOrder(this.Table.Seats);
         }
     }
 }

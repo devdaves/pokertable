@@ -64,10 +64,11 @@
   <ItemGroup>
     <Compile Include="Integration\Data\AzureRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit\DeckTests.cs" />
     <Compile Include="Unit\EngineTests.cs" />
     <Compile Include="Unit\Extensions\ExtensionTests.cs" />
     <Compile Include="Unit\Models\CardTests.cs" />
+    <Compile Include="Unit\OnDealer.cs" />
+    <Compile Include="Unit\OnDeckBuilder.cs" />
     <Compile Include="Unit\PlayerTests.cs" />
     <Compile Include="Unit\TableTests.cs" />
     <Compile Include="Unit\UtilTests.cs" />

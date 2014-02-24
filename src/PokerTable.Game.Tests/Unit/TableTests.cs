@@ -13,13 +13,17 @@ namespace PokerTable.Game.Tests.Unit
         private Engine engine;
 
         private Mock<IRepository> repositoryMock;
+        private IDeckBuilder deckBuilder;
+        private IDealer dealer;
 
         [TestInitialize]
         public void Setup()
         {
             this.repositoryMock = new Mock<IRepository>();
+            this.deckBuilder = new DeckBuilder();
+            this.dealer = new Dealer();
             this.repositoryMock.Setup(x => x.TablePasswordExists(It.IsAny<string>())).Returns(false);
-            this.engine = new Engine(this.repositoryMock.Object);
+            this.engine = new Engine(this.repositoryMock.Object, this.deckBuilder, this.dealer);
             this.engine.CreateNewTable(10, "TestName");
         }
 

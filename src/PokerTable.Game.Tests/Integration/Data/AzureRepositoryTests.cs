@@ -350,7 +350,7 @@ namespace PokerTable.Game.Tests.Integration.Data
 
         private Guid CreateTableInStorage()
         {
-            var engine = new Engine(new AzureRepository());
+            var engine = new Engine(new AzureRepository(), new DeckBuilder(), new Dealer());
             engine.CreateNewTable(5, "Test");
             for (int i = 0; i < 5; i++)
             {

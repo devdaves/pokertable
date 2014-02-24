@@ -62,13 +62,14 @@
     <Compile Include="AzureEntities\SeatEntity.cs" />
     <Compile Include="Data\AzureRepository.cs" />
     <Compile Include="Data\Interfaces\IRepository.cs" />
+    <Compile Include="Dealer.cs" />
+    <Compile Include="DeckBuilder.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Exceptions\NoAvailableCardsException.cs" />
     <Compile Include="Exceptions\TableDoesNotExistException.cs" />
     <Compile Include="Exceptions\TablePasswordInvalidException.cs" />
     <Compile Include="Extensions\EntityToModelExtensions.cs" />
     <Compile Include="Extensions\ModelToEntityExtensions.cs" />
-    <Compile Include="IEngine.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Deck.cs" />
     <Compile Include="Models\Player.cs" />
