@@ -39,6 +39,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.0.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -144,6 +150,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\PokerHub.cs" />
+    <Compile Include="Infrastructure\Installers\ControllersInstaller.cs" />
+    <Compile Include="Infrastructure\Installers\PokerEngineInstaller.cs" />
+    <Compile Include="Infrastructure\Installers\HubsInstaller.cs" />
+    <Compile Include="Infrastructure\SignalRDependencyResolver.cs" />
+    <Compile Include="Infrastructure\WindsorControllerFactory.cs" />
     <Compile Include="Models\JsonModels\AddPlayerToSeatJson.cs" />
     <Compile Include="Models\JsonModels\CreateTableJson.cs" />
     <Compile Include="Models\JsonModels\DealFlopJson.cs" />

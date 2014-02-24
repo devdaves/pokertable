@@ -12,7 +12,7 @@ using PokerTable.Game.Models;
 
 namespace PokerTable.Game.Data
 {
-    internal class AzureRepository : IRepository
+    public class AzureRepository : IRepository
     {
         internal const string AzureTableName = "PokerTable";
 

@@ -62,10 +62,6 @@ namespace PokerTable.Game
         private readonly IDeckBuilder deckBuilder;
         private readonly IDealer dealer;
 
-        public Engine() : this(new AzureRepository(), new DeckBuilder(), new Dealer())
-        {
-        }
-
         public Engine(IRepository repository, IDeckBuilder deckBuilder, IDealer dealer)
         {
             this.deckBuilder = deckBuilder;

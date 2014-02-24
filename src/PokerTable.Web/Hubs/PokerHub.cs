@@ -11,9 +11,9 @@ namespace PokerTable.Web.Hubs
     {
         private IEngine engine;
 
-        public PokerHub()
+        public PokerHub(IEngine engine)
         {
-            this.engine = new Engine();
+            this.engine = engine;
         }
 
         public async Task JoinGroup(string groupName)
