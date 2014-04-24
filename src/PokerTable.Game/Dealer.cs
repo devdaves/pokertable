@@ -15,7 +15,12 @@ namespace PokerTable.Game
         Card Deal(Deck deck);
 
         List<Seat> CalculateDealOrder(List<Seat> seats);
+
+        List<Seat> NextDealer(List<Seat> seats, List<Player> players);
+
+        List<Seat> SetDealer(List<Seat> seats, int seatId);
     }
+
     public class Dealer : IDealer
     {
         public Deck Shuffle(Deck deck)
@@ -53,6 +58,29 @@ namespace PokerTable.Game
                 }
             }
 
+            return seats;
+        }
+
+        public List<Seat> NextDealer(List<Seat> seats, List<Player> players)
+        {
+            seats = this.CalculateDealOrder(seats);
+
+            foreach (var seat in seats.OrderBy(x => x.DealOrder))
+            {
+                var player = players.SingleOrDefault(x => x.Id == seat.PlayerId);
+                if (seat.PlayerId.HasValue && player != null && player.State == Player.States.Available)
+                {
+                    seat.IsDealer = true;
+                    break;
+                }    
+            }
+
+            return seats;
+        }
+
+        public List<Seat> SetDealer(List<Seat> seats, int seatId)
+        {
+            seats.ForEach(s => s.IsDealer = s.Id == seatId);
             return seats;
         }
     }

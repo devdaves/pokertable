@@ -15,6 +15,7 @@ namespace PokerTable.Game.Tests.Unit
         private Mock<IRepository> repositoryMock;
         private IDeckBuilder deckBuilder;
         private IDealer dealer;
+        private Mock<ISeatManager> seatManagerMock;
 
         [TestInitialize]
         public void Setup()
@@ -22,8 +23,9 @@ namespace PokerTable.Game.Tests.Unit
             this.repositoryMock = new Mock<IRepository>();
             this.deckBuilder = new DeckBuilder();
             this.dealer = new Dealer();
+            this.seatManagerMock = new Mock<ISeatManager>();
             this.repositoryMock.Setup(x => x.TablePasswordExists(It.IsAny<string>())).Returns(false);
-            this.engine = new Engine(this.repositoryMock.Object, this.deckBuilder, this.dealer);
+            this.engine = new Engine(this.repositoryMock.Object, this.deckBuilder, this.dealer, this.seatManagerMock.Object);
             this.engine.CreateNewTable(4, string.Empty);
         }
 

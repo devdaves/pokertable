@@ -19,11 +19,11 @@ namespace PokerTable.Game
 
         Guid JoinTable(string tablePassword, string playerName);
 
-        bool AssignSeatToPlayer(int seatId, Guid playerId);
+        void AssignSeatToPlayer(int seatId, Guid playerId);
 
-        bool RemovePlayerFromSeat(int seatId);
+        void RemovePlayerFromSeat(int seatId);
 
-        bool RemovePlayerFromSeat(Guid playerId);
+        void RemovePlayerFromSeat(Guid playerId);
 
         bool DealerExists();
 
@@ -45,9 +45,9 @@ namespace PokerTable.Game
 
         void ResetTable();
 
-        bool AddSeat(bool saveNow = true);
+        void AddSeat(bool saveNow = true);
 
-        bool RemoveSeat(int seatId);
+        void RemoveSeat(int seatId);
 
         bool AddPlayer(Player player);
 
@@ -61,12 +61,14 @@ namespace PokerTable.Game
         private readonly IRepository repository;
         private readonly IDeckBuilder deckBuilder;
         private readonly IDealer dealer;
+        private readonly ISeatManager seatManager;
 
-        public Engine(IRepository repository, IDeckBuilder deckBuilder, IDealer dealer)
+        public Engine(IRepository repository, IDeckBuilder deckBuilder, IDealer dealer, ISeatManager seatManager)
         {
             this.deckBuilder = deckBuilder;
             this.repository = repository;
             this.dealer = dealer;
+            this.seatManager = seatManager;
         }
 
         public Table Table { get; set; }
@@ -74,7 +76,7 @@ namespace PokerTable.Game
         public void CreateNewTable(int numberOfSeats, string name)
         {
             this.Table = new Table(name, this.GetNewTablePassword());
-            this.AddManySeats(numberOfSeats);
+            this.Table.Seats = this.seatManager.AddManySeats(numberOfSeats, this.Table.Id);
             this.BuildDeck();
             this.ShuffleDeck();
 
@@ -115,62 +117,19 @@ namespace PokerTable.Game
             }
         }
 
-        public bool AssignSeatToPlayer(int seatId, Guid playerId)
+        public void AssignSeatToPlayer(int seatId, Guid playerId)
         {
-            try
-            {
-                this.RemovePlayerFromSeat(playerId);
-                var seat = this.Table.Seats.Single(x => x.Id == seatId && x.PlayerId.HasValue == false);
-                seat.PlayerId = playerId;
-                this.repository.SaveSeat(this.Table.Id, seat);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            this.Table.Seats = this.seatManager.AssignSeatToPlayer(this.Table.Seats, seatId, playerId, this.Table.Id);
         }
 
-        public bool RemovePlayerFromSeat(int seatId)
+        public void RemovePlayerFromSeat(int seatId)
         {
-            bool playerRemoved = false;
-            try
-            {
-                var seat = this.Table.Seats.Single(x => x.Id == seatId);
-                if (seat.PlayerId != null)
-                {
-                    seat.PlayerId = null;
-                    this.repository.SaveSeat(this.Table.Id, seat);
-                    playerRemoved = true;
-                }
-            }
-            catch (Exception)
-            {
-                playerRemoved = false;
-            }
-
-            return playerRemoved;
+            this.Table.Seats = this.seatManager.RemovePlayerFromSeat(this.Table.Seats, seatId, this.Table.Id);
         }
 
-        public bool RemovePlayerFromSeat(Guid playerId)
+        public void RemovePlayerFromSeat(Guid playerId)
         {
-            bool playerRemoved = false;
-            try
-            {
-                var seat = this.Table.Seats.SingleOrDefault(x => x.PlayerId == playerId);
-                if (seat != null)
-                {
-                    seat.PlayerId = null;
-                    this.repository.SaveSeat(this.Table.Id, seat);
-                    playerRemoved = true;
-                }
-            }
-            catch (Exception)
-            {
-                playerRemoved = false;
-            }
-
-            return playerRemoved;
+            this.Table.Seats = this.seatManager.RemovePlayerFromSeat(this.Table.Seats, playerId, this.Table.Id);
         }
 
         public bool DealerExists()
@@ -180,25 +139,14 @@ namespace PokerTable.Game
 
         public void SetDealer(int seatId)
         {
-            this.Table.Seats.ForEach(s => s.IsDealer = s.Id == seatId);
-            this.repository.SaveSeatAll(this.Table.Id, this.Table.Seats);
+            this.dealer.SetDealer(this.Table.Seats, seatId);
+            this.seatManager.SaveSeats(this.Table.Seats, this.Table.Id);
         }
 
         public void NextDealer()
         {
-            if (this.Table.Seats.Any() && this.Table.Seats.Any(x => x.PlayerId != null))
-            {
-                this.CalculateDealOrder();
-                foreach (var seat in this.Table.Seats.OrderBy(x => x.DealOrder))
-                {
-                    var player = this.Table.Players.SingleOrDefault(x => x.Id == seat.PlayerId);
-                    if (player != null && player.State == Player.States.Available)
-                    {
-                        this.SetDealer(seat.Id);
-                        return;
-                    }
-                }
-            }
+            this.Table.Seats = this.dealer.NextDealer(this.Table.Seats, this.Table.Players);
+            this.seatManager.SaveSeats(this.Table.Seats, this.Table.Id);
         }
 
         public void ShuffleDeck()
@@ -211,7 +159,7 @@ namespace PokerTable.Game
         {
             if (this.DealerExists())
             {
-                this.CalculateDealOrder();
+                this.Table.Seats = this.dealer.CalculateDealOrder(this.Table.Seats);
                 for (int i = 0; i < 2; i++) //two cards each player
                 {
                     foreach (var seat in this.Table.Seats.Where(x => x.PlayerId != null).OrderBy(x => x.DealOrder))
@@ -275,42 +223,14 @@ namespace PokerTable.Game
             this.ShuffleDeck(); // saves deck inside method
         }
 
-        public bool AddSeat(bool saveNow = true)
+        public void AddSeat(bool saveNow = true)
         {
-            try
-            {
-                var id = this.Table.Seats.Count() + 1;
-                var seat = new Seat { Id = id, DealOrder = 0, IsDealer = false, PlayerId = null };
-                this.Table.Seats.Add(seat);
-
-                if (saveNow)
-                {
-                    this.repository.SaveSeat(this.Table.Id, seat);
-                }
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            this.Table.Seats = this.seatManager.AddSeat(this.Table.Seats, this.Table.Id);
         }
 
-        public bool RemoveSeat(int seatId)
+        public void RemoveSeat(int seatId)
         {
-            if (this.Table.Seats.All(x => x.Id != seatId))
-            {
-                return false;
-            }
-
-            var seatToRemove = this.Table.Seats.Single(x => x.Id == seatId);
-            this.Table.Seats.Remove(seatToRemove);
-            this.Table.Seats.Where(x => x.Id > seatId).ToList().ForEach(s => s.Id = s.Id - 1);
-
-            this.repository.RemoveSeat(this.Table.Id, seatToRemove);
-            this.repository.SaveSeatAll(this.Table.Id, this.Table.Seats);
-
-            return true;
+            this.Table.Seats = this.seatManager.RemoveSeat(this.Table.Seats, seatId, this.Table.Id);
         }
 
         public bool AddPlayer(Player player)
@@ -413,23 +333,6 @@ namespace PokerTable.Game
             }
 
             return code;
-        }
-
-        private void AddManySeats(int howManySeats)
-        {
-            this.Table.Seats = new List<Seat>();
-
-            for (int i = 0; i < howManySeats; i++)
-            {
-                this.AddSeat(false);
-            }
-
-            this.repository.SaveSeatAll(this.Table.Id, this.Table.Seats);
-        }
-
-        private void CalculateDealOrder()
-        {
-            this.Table.Seats = this.dealer.CalculateDealOrder(this.Table.Seats);
         }
     }
 }

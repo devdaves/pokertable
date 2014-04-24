@@ -19,6 +19,7 @@ namespace PokerTable.Web.Infrastructure.Installers
                 Component.For<IEngine>().ImplementedBy<Engine>().LifestyleTransient(),
                 Component.For<IDealer>().ImplementedBy<Dealer>().LifestyleTransient(),
                 Component.For<IDeckBuilder>().ImplementedBy<DeckBuilder>().LifestyleTransient(),
+                Component.For<ISeatManager>().ImplementedBy<SeatManager>().LifestyleTransient(),
                 Component.For<IRepository>().ImplementedBy<AzureRepository>().LifestyleTransient()
                 );
         }

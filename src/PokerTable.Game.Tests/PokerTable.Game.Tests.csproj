@@ -69,6 +69,8 @@
     <Compile Include="Unit\Models\CardTests.cs" />
     <Compile Include="Unit\OnDealer.cs" />
     <Compile Include="Unit\OnDeckBuilder.cs" />
+    <Compile Include="Unit\OnSeatManager.cs" />
+    <Compile Include="Unit\OnSeats.cs" />
     <Compile Include="Unit\PlayerTests.cs" />
     <Compile Include="Unit\TableTests.cs" />
     <Compile Include="Unit\UtilTests.cs" />
